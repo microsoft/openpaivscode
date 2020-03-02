@@ -6,9 +6,8 @@
 
 import * as fs from 'fs-extra';
 import * as _ from 'lodash';
-import * as vscode from 'vscode';
-
 import { parse, util, YamlDocument, YamlNode } from 'node-yaml-parser';
+import * as vscode from 'vscode';
 
 import {
     OPENPAI_SCHEMA,
@@ -16,7 +15,7 @@ import {
     SCHEMA_YAML_JOB_CONFIG,
     SCHEMA_YAML_JOB_CONFIG_PATH,
     YAML_EXTENSION_ID
-} from '../common/constants';
+} from '../../common/constants';
 
 /**
  * The yaml schema holder.
