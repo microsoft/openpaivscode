@@ -46,6 +46,7 @@ export const COMMAND_INSERT_JOB_CONFIG = 'paiext.job.config.insert.menu';
 export const COMMAND_CREATE_JOB_CONFIG = 'paiext.cluster.job.create-config';
 export const COMMAND_CREATE_JOB_CONFIG_V1 = 'paiext.cluster.job.create-config-v1';
 export const COMMAND_CREATE_JOB_CONFIG_V2 = 'paiext.cluster.job.create-config-v2';
+export const COMMAND_CREATE_REMOTE_JOB = 'paiext.job.create.remote';
 export const COMMAND_CONTAINER_HDFS_BACK = 'paiext.container.hdfs.back';
 export const COMMAND_CONTAINER_HDFS_REFRESH = 'paiext.container.hdfs.refresh';
 export const COMMAND_CONTAINER_STORAGE_BACK = 'paiext.container.storage.back';
