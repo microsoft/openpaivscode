@@ -944,7 +944,8 @@ export class PAIJobManager extends Singleton {
         });
     }
 
-    private async pickCluster(): Promise<IPAICluster> {
+    // tslint:disable-next-line
+    public async pickCluster(): Promise<IPAICluster> {
         const clusterManager: ClusterManager = await getSingleton(ClusterManager);
         const pickResult: number | undefined = await clusterManager.pick();
         if (pickResult === undefined) {

@@ -6,6 +6,7 @@
         "common.finish": "Finish",
         "common.cancel": "Cancel",
         "common.edit": "Edit",
+        "common.submit": "Submit",
         "common.cluster.storage": "Cluster storage",
         "common.personal.storage": "Personal storage",
         "common.workspace.nofolder": "No folder in workspace.",
@@ -133,7 +134,9 @@
         "job.runtime.plugin.ssh.key.generator": "Generate new SSH key pair",
         "job.runtime.plugin.ssh.key.import": "Import from file",
         "job.runtime.plugin.ssh.key.input": "Input manully",
-        "job.config.component.select": "Please choose a job config component."
+        "job.config.component.select": "Please choose a job config component.",
+        "job.remote.generate.ssh.key": "PAI: Generating SSH key.",
+        "job.remote.edit.prompt": "Please edit the job config and click 'Submit' to submit to the cluster."
     },
     "en": {},
     "zh": {
@@ -143,6 +146,7 @@
         "common.finish": "完成",
         "common.cancel": "取消",
         "common.edit": "编辑",
+        "common.submit": "提交",
         "common.cluster.storage": "集群存储",
         "common.personal.storage": "个人存储",
         "common.workspace.nofolder": "当前工作区中没有文件夹。",
@@ -273,6 +277,8 @@
         "job.runtime.plugin.ssh.key.generator": "生成新的 SSH 密钥对",
         "job.runtime.plugin.ssh.key.import": "从文件中载入 SSH 公钥",
         "job.runtime.plugin.ssh.key.input": "手动输入",
-        "job.config.component.select": "请选择一个任务配置文件中的组件"
+        "job.config.component.select": "请选择一个任务配置文件中的组件",
+        "job.remote.generate.ssh.key": "PAI: 正在生成 SSH 密钥",
+        "job.remote.edit.prompt": "请编辑任务配置文件并点击 ‘提交’，将任务提交至集群"
     }
 }
