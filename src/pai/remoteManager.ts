@@ -131,13 +131,15 @@ export class RemoteManager extends Singleton {
         }
         const privateKeyPath: string = path.join(this.currentWorkspace(), RemoteManager.PRIVATE_KEY_FILE_NAME);
 
-        Object.entries(jobStatus.taskRoles).forEach(([_, value]: [string, any]) => {
-            const jobSshConfig: string = `Host ${value.taskStatuses[0].containerIp}\n` +
-                `  HostName ${value.taskStatuses[0].containerIp}\n` +
-                `  IdentityFile "${privateKeyPath}"\n` +
-                `  Port ${value.taskStatuses[0].containerPorts.ssh}\n` +
-                '  User root\n';
-            fs.appendFileSync(configPath, jobSshConfig);
+        Object.entries(jobStatus.taskRoles).forEach(([key, value]: [string, any]) => {
+            for (const taskStatus of <any[]>value.taskStatuses) {
+                const jobSshConfig: string = `Host ${jobStatus.name}_${key}_${taskStatus.taskIndex}\n` +
+                    `  HostName ${taskStatus.containerIp}\n` +
+                    `  IdentityFile "${privateKeyPath}"\n` +
+                    `  Port ${taskStatus.containerPorts.ssh}\n` +
+                    '  User root\n';
+                fs.appendFileSync(configPath, jobSshConfig);
+            }
         });
 
         try {
