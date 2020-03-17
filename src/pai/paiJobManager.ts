@@ -48,12 +48,12 @@ import { IPAICluster, IPAIJobConfigV1, IPAIJobConfigV2, IPAIJobV2UploadConfig, I
 import { PAIRestUri, PAIWebPortalUri } from './utility/paiUri';
 import { registerYamlSchemaSupport } from './yaml/yamlSchemaSupport';
 
-interface ITokenItem {
+export interface ITokenItem {
     token: string;
     expireTime: number;
 }
 
-interface IJobParam {
+export interface IJobParam {
     config: IPAIJobConfigV1 | IPAIJobConfigV2;
     jobVersion: number;
     cluster?: IPAICluster;
@@ -65,7 +65,7 @@ interface IJobParam {
     generateJobName: boolean;
 }
 
-interface IJobInput {
+export interface IJobInput {
     jobConfigPath?: string;
     clusterIndex?: number;
 }
@@ -569,7 +569,8 @@ export class PAIJobManager extends Singleton {
         }
     }
 
-    private async submitJobV2(param: IJobParam, statusBarItem: vscode.StatusBarItem): Promise<void> {
+    // tslint:disable-next-line:member-ordering
+    public async submitJobV2(param: IJobParam, statusBarItem: vscode.StatusBarItem): Promise<string | undefined> {
         const config: IPAIJobConfigV2 = <IPAIJobConfigV2>param.config;
         const cluster: IPAICluster = param.cluster!;
 
@@ -641,6 +642,8 @@ export class PAIJobManager extends Singleton {
         } catch (e) {
             throw new Error(e.status ? `${e.status}: ${e.response.body.message}` : e);
         }
+
+        return config.name;
     }
 
     // tslint:disable-next-line

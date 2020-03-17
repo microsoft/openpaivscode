@@ -1,46 +1,53 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License in the project root for license information.
- * @author Microsoft
- */
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 import * as fs from 'fs-extra';
-import * as globby from 'globby';
 import { injectable } from 'inversify';
 import * as yaml from 'js-yaml';
-import * as JSONC from 'jsonc-parser';
-import { isEmpty, isNil, range } from 'lodash';
-import * as os from 'os';
+import { OpenPAIClient } from 'openpai-js-sdk';
+import { IJobStatus } from 'openpai-js-sdk/lib/models/job';
 import * as path from 'path';
-import * as request from 'request-promise-native';
 import * as uuid from 'uuid';
-import { commands, window, workspace, WorkspaceFolder, Uri, TextEditor } from 'vscode';
+import {
+    commands,
+    window,
+    workspace,
+    StatusBarAlignment,
+    StatusBarItem,
+    Terminal,
+    TextEditor,
+    Uri,
+    WorkspaceConfiguration,
+    WorkspaceFolder
+} from 'vscode';
 
-import { COMMAND_CREATE_REMOTE_JOB } from '../common/constants';
+import {
+    COMMAND_CREATE_REMOTE_JOB,
+    OCTICON_CLOUDUPLOAD,
+    SETTING_JOB_GENERATEJOBNAME_ENABLED,
+    SETTING_JOB_V2_UPLOAD
+} from '../common/constants';
 import { __ } from '../common/i18n';
-import { Singleton, getSingleton } from '../common/singleton';
-import { Util, IKeyPair } from '../common/util';
+import { delay, getSingleton, Singleton } from '../common/singleton';
+import { IKeyPair, Util } from '../common/util';
 
+import { ClusterManager } from './clusterManager';
 import { ClusterExplorerChildNode } from './container/configurationTreeDataProvider';
+import { IJobParam, PAIJobManager } from './paiJobManager';
+import { StorageHelper } from './storage/storageHelper';
 import {
     IPAICluster,
     IPAIJobConfigV2,
-    IPAIJobV2UploadConfig,
-    IPAITaskRole,
-    IUploadConfig
+    IPAIJobV2UploadConfig
 } from './utility/paiInterface';
-import { PAIJobManager } from './paiJobManager';
-import { StorageHelper } from './storage/storageHelper';
 
 /**
  * Manager class for PAI remote job
  */
 @injectable()
 export class RemoteManager extends Singleton {
-    private static readonly TIMEOUT: number = 60 * 1000;
-    private static readonly REMOTE_SSH_KEY_FOLDER: string = '.pai_remote';
-    private static readonly PUBLIC_KEY_FILE_NAME: string = 'public.key';
-    private static readonly PRIVATE_KEY_FILE_NAME: string = 'private.key';
+    private static readonly PUBLIC_KEY_FILE_NAME: string = '.pai_remote/public.key';
+    private static readonly PRIVATE_KEY_FILE_NAME: string = '.pai_remote/private.key';
 
     private lastRemoteJobEditorPath: string | undefined;
 
@@ -56,10 +63,89 @@ export class RemoteManager extends Singleton {
     }
 
     public async createRemoteJob(input?: ClusterExplorerChildNode): Promise<void> {
+        let cluster: IPAICluster;
+        if (input instanceof ClusterExplorerChildNode) {
+            const clusterManager: ClusterManager = await getSingleton(ClusterManager);
+            cluster = clusterManager.allConfigurations[input.index];
+        } else {
+            cluster = await (await getSingleton(PAIJobManager)).pickCluster();
+        }
         const key: IKeyPair = await this.generateRemoteKey();
-        const cluster: IPAICluster = await (await getSingleton(PAIJobManager)).pickCluster();
         const job: IPAIJobConfigV2 = await this.generateRemoteJob(cluster, key);
-        await this.editRemoteJob(job.name + '.pai.yaml', job);
+        const jobName: string | undefined = await this.editRemoteJob(job.name + '.pai.yaml', job, cluster);
+        if (jobName) {
+            const statusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, Number.MAX_VALUE);
+            statusBarItem.text = `${OCTICON_CLOUDUPLOAD} ${__('job.waiting.running')}`;
+            statusBarItem.show();
+
+            const client: OpenPAIClient = new OpenPAIClient({
+                rest_server_uri: cluster.rest_server_uri,
+                token: cluster.token,
+                username: cluster.username,
+                password: cluster.password,
+                https: cluster.https
+            });
+
+            try {
+                let jobStatus: IJobStatus;
+                while (true) {
+                    jobStatus = <IJobStatus>await client.job.getFrameworkInfo(cluster.username!, jobName);
+                    if (jobStatus.jobStatus.state === 'WAITING') {
+                        await delay(1000);
+                    } else {
+                        break;
+                    }
+                }
+
+                const remote: string = __('job.submission.success.remote');
+                const res: string | undefined = await window.showInformationMessage(
+                    __('job.submission.success'),
+                    remote
+                );
+
+                if (res === remote) {
+                    await this.remoteJob(jobStatus);
+                }
+            } catch (ex) {
+                console.log(ex);
+            }
+        }
+    }
+
+    public async remoteJob(jobStatus: IJobStatus): Promise<void> {
+        const remoteSettings: WorkspaceConfiguration = workspace.getConfiguration('remote');
+        let configPath: string;
+        if (remoteSettings.get('SSH.configFile')) {
+            configPath = remoteSettings.get<string>('SSH.configFile')!;
+        } else {
+            configPath = path.join(this.currentWorkspace(), 'config');
+            if (!fs.existsSync(path.dirname(configPath))) {
+                fs.mkdirSync(path.dirname(configPath));
+            }
+
+            if (!fs.existsSync(configPath)) {
+                fs.createFileSync(configPath);
+            }
+
+            remoteSettings.update('SSH.configFile', configPath);
+        }
+        const privateKeyPath: string = path.join(this.currentWorkspace(), RemoteManager.PRIVATE_KEY_FILE_NAME);
+
+        Object.entries(jobStatus.taskRoles).forEach(([_, value]: [string, any]) => {
+            const jobSshConfig: string = `Host ${value.taskStatuses[0].containerIp}\n` +
+                `  HostName ${value.taskStatuses[0].containerIp}\n` +
+                `  IdentityFile "${privateKeyPath}"\n` +
+                `  Port ${value.taskStatuses[0].containerPorts.ssh}\n` +
+                '  User root\n';
+            fs.appendFileSync(configPath, jobSshConfig);
+        });
+
+        try {
+            await commands.executeCommand('opensshremotesexplorer.emptyWindowInNewWindow');
+        } catch (ex) {
+            console.log(ex);
+            await commands.executeCommand('workbench.view.remote');
+        }
     }
 
     public async generateRemoteJob(cluster: IPAICluster, key: IKeyPair): Promise<IPAIJobConfigV2> {
@@ -78,13 +164,17 @@ export class RemoteManager extends Singleton {
         }];
 
         // Storage Plugin
-        const storages: string[] = await StorageHelper.getStorages(cluster));
-        runtimeplugin.push({
-            plugin: 'teamwise_storage',
-            parameters: {
-                storageConfigNames: storages
-            }
-        });
+        try {
+            const storages: string[] = await StorageHelper.getStorages(cluster);
+            runtimeplugin.push({
+                plugin: 'teamwise_storage',
+                parameters: {
+                    storageConfigNames: storages
+                }
+            });
+        } catch (ex) {
+            console.log(ex);
+        }
 
         return <IPAIJobConfigV2>{
             protocolVersion: 2,
@@ -98,12 +188,12 @@ export class RemoteManager extends Singleton {
                 }
             ],
             taskRoles: {
-                train: {
+                taskrole: {
                     instances: 1,
                     dockerImage: 'image',
                     resourcePerInstance: {
                       cpu: 1,
-                      memoryMB: 16384,
+                      memoryMB: 8192,
                       gpu: 1
                     },
                     commands: ['sleep 5h']
@@ -116,32 +206,47 @@ export class RemoteManager extends Singleton {
     }
 
     public async generateRemoteKey(): Promise<IKeyPair> {
-        const folders: WorkspaceFolder[] | undefined = workspace.workspaceFolders;
-        const folder: WorkspaceFolder | undefined =
-            folders && folders.length > 0 ? folders[0] : undefined;
-        if (!folder) {
-            throw new Error(__('common.workspace.nofolder'));
-        }
-        const workspacePath: string = folder.uri.fsPath;
+        const workspacePath: string = this.currentWorkspace();
         const privateKeyPath: string = path.join(workspacePath, RemoteManager.PRIVATE_KEY_FILE_NAME);
         const publicKeyPath: string = path.join(workspacePath, RemoteManager.PUBLIC_KEY_FILE_NAME);
 
-        if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {
-            Util.info('job.remote.generate.ssh.key');
+        try {
+            if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {
+                Util.info('job.remote.generate.ssh.key');
 
-            const keyPair: IKeyPair = Util.generateSSHKeyPair();
-            await fs.writeFile(privateKeyPath, keyPair.private);
-            await fs.writeFile(publicKeyPath, keyPair.public);
-            return keyPair;
-        } else {
-            return <IKeyPair> {
-                private: fs.readFileSync(privateKeyPath, 'utf8'),
-                public: fs.readFileSync(publicKeyPath, 'utf8')
-            };
+                const keyPair: IKeyPair = Util.generateSSHKeyPair();
+
+                if (!fs.existsSync(path.dirname(privateKeyPath))) {
+                    fs.mkdirSync(path.dirname(privateKeyPath));
+                }
+
+                if (!fs.existsSync(path.dirname(publicKeyPath))) {
+                    fs.mkdirSync(path.dirname(publicKeyPath));
+                }
+
+                await fs.writeFile(privateKeyPath, keyPair.private);
+                await fs.writeFile(publicKeyPath, keyPair.public);
+
+                const terminal: Terminal = window.createTerminal('PAI Secure SSH private key');
+                terminal.sendText(`cmd /c Icacls "${privateKeyPath}" /c /t /Inheritance:d`);
+                terminal.sendText(`cmd /c Icacls "${privateKeyPath}" /c /t /Grant %UserName%:F`);
+                terminal.sendText(`cmd /c Icacls "${privateKeyPath}"  /c /t /Remove Administrator BUILTIN\\Administrators BUILTIN Everyone System Users`);
+                terminal.sendText(`cmd /c Icacls "${privateKeyPath}"`);
+
+                return keyPair;
+            } else {
+                return <IKeyPair> {
+                    private: fs.readFileSync(privateKeyPath, 'utf8'),
+                    public: fs.readFileSync(publicKeyPath, 'utf8')
+                };
+            }
+        } catch (ex) {
+            console.log(ex);
+            throw ex;
         }
     }
 
-    private async editRemoteJob(fileName: string, job: IPAIJobConfigV2): Promise<string> {
+    private async editRemoteJob(fileName: string, job: IPAIJobConfigV2, cluster?: IPAICluster): Promise<string | undefined> {
         const tempPath: string = await Util.getNewTempDirectory();
         const filePath: string = path.join(tempPath, fileName.replace(/\//g, ''));
 
@@ -157,13 +262,14 @@ export class RemoteManager extends Singleton {
 
         await fs.writeFile(filePath, yaml.safeDump(job));
         const editor: TextEditor = await window.showTextDocument(Uri.file(filePath));
+        let resultJobName: string | undefined;
 
         // DO NOT use filePath - there may be difference with drive letters ('C' vs 'c')
         this.lastRemoteJobEditorPath = editor.document.fileName;
 
         try {
             while (true) {
-                const SUBMIT: string = __('common.finish');
+                const SUBMIT: string = __('common.submit');
                 const CANCEL: string = __('common.cancel');
                 // Only error message won't be collapsed automatically by vscode.
                 const result: string | undefined = await window.showErrorMessage(
@@ -173,38 +279,67 @@ export class RemoteManager extends Singleton {
                 );
                 if (result === SUBMIT) {
                     await editor.document.save();
+                    const statusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, Number.MAX_VALUE);
+                    statusBarItem.text = `${OCTICON_CLOUDUPLOAD} ${__('job.prepare.status')}`;
+                    statusBarItem.show();
+
                     try {
-                        if (schemaFile) {
-                            const error: string | undefined = await this.validateJSON(editedObject, schemaFile);
-                            if (error) {
-                                this.err('util.editjson.validationerror', [error]);
-                                continue;
-                            }
+                        const jobConfig: IPAIJobConfigV2 = yaml.safeLoad(editor.document.getText());
+                        const jobManager: PAIJobManager = await getSingleton(PAIJobManager);
+                        if (!cluster) {
+                            cluster = await jobManager.pickCluster();
                         }
-                        return editedObject;
-                    } catch (ex) {
-                        this.err('util.editjson.parseerror', [ex]);
-                        continue;
+                        const settings: WorkspaceConfiguration = await jobManager.ensureSettingsV2(cluster);
+                        const generateJobName: boolean | undefined = settings.get(SETTING_JOB_GENERATEJOBNAME_ENABLED);
+                        const param: IJobParam = {
+                            config: jobConfig,
+                            jobVersion: 2,
+                            cluster: cluster,
+                            workspace: this.currentWorkspace(),
+                            generateJobName: generateJobName ? generateJobName : false
+                        };
+                        const uploadConfig: IPAIJobV2UploadConfig | undefined = settings.get(SETTING_JOB_V2_UPLOAD);
+                        if (uploadConfig && uploadConfig[cluster.name!] && uploadConfig[cluster.name!].enable) {
+                            param.upload = uploadConfig[cluster.name!];
+                        }
+
+                        resultJobName = await jobManager.submitJobV2(param, statusBarItem);
+                    } catch (e) {
+                        Util.err('job.submission.error', [e.message || e]);
+                    } finally {
+                        statusBarItem.dispose();
                     }
                 }
-                return;
+                break;
             }
         } finally {
             // Try to close the temporary editor - vscode doesn't provide close editor API so do it hacky way
             // Note: The editor may have already been closed, either by user or by another editJSON session.
-            if (vscode.window.activeTextEditor === editor) {
+            if (window.activeTextEditor === editor) {
                 await editor.document.save();
 
                 // Check again in case the editor is not the original one
-                if (vscode.window.activeTextEditor === editor) {
-                    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+                if (window.activeTextEditor === editor) {
+                    await commands.executeCommand('workbench.action.closeActiveEditor');
                 }
             }
-            await this.cleanTempDirectory(tempPath);
+            await Util.cleanTempDirectory(tempPath);
         }
+
+        return resultJobName;
     }
 
     private generateRemoteJobName(cluster: IPAICluster): string {
         return `${cluster.username}_remote_${uuid().substring(0, 8)}`;
+    }
+
+    private currentWorkspace(): string {
+        const folders: WorkspaceFolder[] | undefined = workspace.workspaceFolders;
+        const folder: WorkspaceFolder | undefined =
+            folders && folders.length > 0 ? folders[0] : undefined;
+        if (!folder) {
+            throw new Error(__('common.workspace.nofolder'));
+        }
+        return folder.uri.fsPath;
     }
 }

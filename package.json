@@ -213,6 +213,11 @@
                 "command": "paiext.job.config.insert.runtime.plugin",
                 "title": "%paiext.job.config.insert.runtime.plugin%",
                 "category": "PAI"
+            },
+            {
+                "command": "paiext.job.create.remote",
+                "title": "%paiext.job.create.remote%",
+                "category": "PAI"
             }
         ],
         "viewsContainers": {

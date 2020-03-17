@@ -15,6 +15,7 @@ import { StorageTreeDataProvider } from './pai/container/storage/storageTreeView
 import { PAIJobManager } from './pai/paiJobManager';
 import { PAIWebpages } from './pai/paiWebpages';
 import { RecentJobManager } from './pai/recentJobManager';
+import { RemoteManager } from './pai/remoteManager';
 import { HDFS } from './pai/storage/hdfs';
 import { NfsStorageManager } from './pai/storage/nfsStorageManager';
 import { PersonalStorageManager } from './pai/storage/personalStorageManager';
@@ -38,5 +39,6 @@ export const allSingletonClasses: (new(...arg: any[]) => Singleton)[] = [
     JobListTreeDataProvider,
     RemoteFileEditor,
     StorageHelperClass,
-    YamlCommands
+    YamlCommands,
+    RemoteManager
 ];
