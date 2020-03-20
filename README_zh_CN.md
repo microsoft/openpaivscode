@@ -15,6 +15,10 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
     - [命令面板](#%e5%91%bd%e4%bb%a4%e9%9d%a2%e6%9d%bf)
     - [PAI 集群浏览器](#pai-%e9%9b%86%e7%be%a4%e6%b5%8f%e8%a7%88%e5%99%a8)
     - [设置](#%e8%ae%be%e7%bd%ae)
+  - [Developer Support](#developer-support)
+    - [Getting started](#getting-started)
+    - [Debug in vscode](#debug-in-vscode)
+    - [Package to VSIX](#package-to-vsix)
   - [问题和建议](#%e9%97%ae%e9%a2%98%e5%92%8c%e5%bb%ba%e8%ae%ae)
   - [贡献](#%e8%b4%a1%e7%8c%ae)
   - [许可证](#%e8%ae%b8%e5%8f%af%e8%af%81)
@@ -171,6 +175,43 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 | pai.job.jobList.allJobsPageSize  | *All Jobs* 的页面条数                           |
 | pai.job.jobList.refreshInterval  | Job 列表的刷新间隔（秒）                             |
 | pai.hdfs.location                | 显示 HDFS 存储的位置                              |
+
+## Developer Support
+
+### Getting started
+
+1. Install prerequisites:
+   
+   - latest Visual Studio Code
+   - Node.js v10.0.0 or higher
+   - yarn v1.17.3 or higher
+
+2. Install extension dependencies:
+
+   - In the VS Code Extensions tab, search for RedHat YAML and install that extension
+
+3. Fork and clone this repository and go into the folder:
+
+   ```bash
+   git clone https://github.com/Microsoft/openpaivscode
+   cd openpaivscode
+   ```
+
+4. Install the dependencies:
+
+   ```bash
+   yarn install
+   ```
+
+### Debug in vscode
+
+    Press `F5` to launch debug window
+
+### Package to VSIX
+
+```bash
+yarn package
+```
 
 ## 问题和建议
 
