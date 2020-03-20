@@ -1,5 +1,9 @@
 # OpenPAI VS Code Client
 
+[![Version](https://img.shields.io/github/release/Microsoft/openpaivscode.svg)](https://github.com/Microsoft/openpaivscode/releases/latest)
+
+[简体中文](https://github.com/microsoft/openpaivscode/blob/master/README_zh_CN.md)
+
 OpenPAI VS Code Client is an extension to connect OpenPAI clusters, submit AI jobs, simulate jobs locally, manage files, and so on.
 
 - [OpenPAI VS Code Client](#openpai-vs-code-client)
