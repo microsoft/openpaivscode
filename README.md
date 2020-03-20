@@ -17,8 +17,12 @@ OpenPAI VS Code Client is an extension to connect OpenPAI clusters, submit AI jo
     - [Command Palette](#command-palette)
     - [PAI Cluster Explorer](#pai-cluster-explorer)
     - [Settings](#settings)
+  - [Developer Support](#developer-support)
+    - [Getting started](#getting-started)
+    - [Debug in vscode](#debug-in-vscode)
+    - [Package to VSIX](#package-to-vsix)
   - [Issue and suggestions](#issue-and-suggestions)
-  - [Contribution](#contribution)
+- [Contributing](#contributing)
   - [License](#license)
 
 ## Connect to an OpenPAI cluster
@@ -192,6 +196,43 @@ There are three parts in the side bar.
 | pai.job.jobList.allJobsPageSize  | The page size of the *All Jobs* list                    |
 | pai.job.jobList.refreshInterval  | The refresh interval of job list (in seconds)           |
 | pai.hdfs.location                | Where HDFS storage will be shown                        |
+
+## Developer Support
+
+### Getting started
+
+1. Install prerequisites:
+   
+   - latest Visual Studio Code
+   - Node.js v10.0.0 or higher
+   - yarn v1.17.3 or higher
+
+2. Install extension dependencies:
+
+   - In the VS Code Extensions tab, search for RedHat YAML and install that extension
+
+3. Fork and clone this repository and go into the folder:
+
+   ```bash
+   git clone https://github.com/Microsoft/openpaivscode
+   cd openpaivscode
+   ```
+
+4. Install the dependencies:
+
+   ```bash
+   yarn install
+   ```
+
+### Debug in vscode
+
+    Press `F5` to launch debug window
+
+### Package to VSIX
+
+```bash
+yarn package
+```
 
 ## Issue and suggestions
 
