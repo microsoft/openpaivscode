@@ -31,19 +31,16 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 1. 使用快捷键 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 打开命令面板。
 2. 如下输入并查找 *PAI: 添加 PAI 集群*。
-  
-      ![添加集群](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster.png)
-      
+
+      ![添加集群](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster.png)
 
 3. 按下 <kbd>Enter</kbd>，并输入 OpenPAI 集群的地址。 可以是域名或者 IP 地址。 然后，再次按下 <kbd>Enter</kbd>。
-  
-      ![添加集群](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster.png)
-      
+
+      ![添加集群](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster.png)
 
 4. 配置文件将会被打开，至少需要填入 username 和 password 字段。 完成后，点击右下角的 *完成* 按钮。 注意，如果直接保存并关闭文件，则无法生效。
-  
-      ![添加集群配置](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add-cluster-finish.png)
-      
+
+      ![添加集群配置](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add-cluster-finish.png)
 
 如果有多个 OpenPAI 集群，可以多次按照上述步骤进行。
 
@@ -51,7 +48,7 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 添加完集群配置后，可以在*PAI 集群浏览器* 面板找到该集群。
 
-![pai cluster explorer](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/pai_cluster_explorer.png)
+![pai cluster explorer](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/pai_cluster_explorer.png)
 
 提交 v2 Job (OpenPAI >= v0.13.0)：
 
@@ -62,11 +59,11 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
     2. 在 `VSCode 资源管理器` 中右击 python 或 cntk 文件，并选取 `创建 PAI 任务配置文件 V2`, 并指定文件名和路径来创建 Job 配置文件。
 2. 根据需要更新 Job 配置。 如果不熟悉配置文件，可参考[这里](https://github.com/microsoft/pai/blob/master/docs/zh_CN/marketplace-and-submit-job-v2/marketplace-and-submit-job-v2.md#introduction-to-yaml-file)。
 3. 右击创建的 Job v2 配置文件，然后点击 `在 PAI 集群上提交任务`。 客户端会将文件上传到 OpenPAI 并创建 Job。 完成后，在右下角会有通知，可点击打开 Job 详情页面。
-  
+
       如果有多个 OpenPAI 集群，需要选择其中一个。
-      
+
       此动画显示了上述步骤。
-      ![提交 Job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/submit-job-v2.gif)
+      ![提交 Job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/submit-job-v2.gif)
 
 提交 v1 Job (deprecating, OpenPAI < 0.13.0)：
 
@@ -77,12 +74,11 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
     2. 在 `VSCode 资源管理器` 中右击 python 或 cntk 文件，并选取 `创建 PAI 任务配置文件 V1`, 并指定文件名和路径来创建 Job 配置文件。
 2. 根据需要更新 Job 配置。 如果不熟悉配置文件，可参考[这里](https://github.com/Microsoft/pai/blob/master/docs/zh_CN/user/training.md)。
 3. 右击创建的 Job 配置文件，然后点击 `Submit Job to PAI Cluster`。 客户端会将文件上传到 OpenPAI 并创建 Job。 完成后，在右下角会有通知，可点击打开 Job 详情页面。
-  
+
       如果有多个 OpenPAI 集群，需要选择其中一个。
-      
+
       此动画显示了上述步骤。
-      ![提交 Job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/submit-job.gif)
-      
+      ![提交 Job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/submit-job.gif)
 
 ## 本机模拟
 
@@ -96,13 +92,12 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 1. 与提交 Job 一样，可右击配置文件来找到本机模拟功能。
 2. 点击 *Simulate PAI Job Running*，过一小会儿，就会看到如下的通知。
-  
-      ![simulate running](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/simulate_running.png)
-      
+
+      ![simulate running](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/simulate_running.png)
 
 3. 可点击 *Simulate first task in VS Code terminal* 直接模拟运行，或点击 *Reveal in Explorer* 来查看创建的 Docker 文件，并手动运行模拟。
 
-此动画显示了上述步骤。 ![simulate job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/simulate-job.gif)
+此动画显示了上述步骤。 ![simulate job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/simulate-job.gif)
 
 ### 局限性
 
@@ -115,7 +110,7 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 ## 任务代码自动上传
 
-请参考 [Auto Upload](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/documentation/storage_explorer_and_auto_upload.md#Auto-Upload).
+请参考 [Auto Upload](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/documentation/storage_explorer_and_auto_upload.md#Auto-Upload).
 
 ## 参考
 
@@ -123,23 +118,23 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 客户端有两部分用户界面。 首先是资源管理器中的 *PAI CLUSTER EXPLORER*，在上述章节已介绍过。 可通过活动栏中图标打开第二部分。
 
-![activity bar](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/activity_bar.png)
+![activity bar](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/activity_bar.png)
 
 打开后可看到两个部分。
 
 - 存储浏览器 (PAI > 0.14.0)
-  
-    请参考 [Storage Explorer](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/documentation/storage_explorer_and_auto_upload.md#Storage-Explorer).
+
+请参考 [Storage Explorer](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/documentation/storage_explorer_and_auto_upload.md#Storage-Explorer).
 
 - HDFS 浏览器 (PAI <= 0.14.0)
-  
-      可查看、上传或下载 OpenPAI 集群存储中的文件。
-      
+
+可查看、上传或下载 OpenPAI 集群存储中的文件。
+
 - PAI 任务列表
-  
-      可查看 OpenPAI 集群中的 Job。 列表会定期刷新，前面的图标显示了 Job 的状态。 可双击 Job 在浏览器中查看。
-      
-![job list](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/job-list.png)
+
+可查看 OpenPAI 集群中的 Job。 列表会定期刷新，前面的图标显示了 Job 的状态。 可双击 Job 在浏览器中查看。
+
+![job list](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/job-list.png)
 
 ### 命令面板
 
@@ -181,7 +176,7 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 ### Getting started
 
 1. Install prerequisites:
-   
+
    - latest Visual Studio Code
    - Node.js v10.0.0 or higher
    - yarn v1.17.3 or higher
@@ -205,7 +200,7 @@ OpenPAI VS Code Client 是一个 Visual Studio Code 的扩展组件，可以连�
 
 ### Debug in vscode
 
-    Press `F5` to launch debug window
+Press `F5` to launch debug window
 
 ### Package to VSIX
 
@@ -219,7 +214,7 @@ yarn package
 
 ## 贡献
 
-https://github.com/microsoft/pai/blob/master/README_zh_CN.md#参与贡献
+[https://github.com/microsoft/pai/blob/master/README_zh_CN.md#参与贡献](https://github.com/microsoft/pai/blob/master/README_zh_CN.md#参与贡献)
 
 ## 许可证
 
