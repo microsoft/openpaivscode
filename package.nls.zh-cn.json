@@ -37,6 +37,7 @@
     "paiext.cluster.job.more": "显示更多...",
     "paiext.job.config.insert.runtime.plugin": "插入 runtime plugin 设置",
     "paiext.job.config.insert.menu": "OpenPAI: 插入任务设置",
+    "paiext.job.create.remote": "创建远程任务",
     "config.title": "OpenPAI VS Code 客户端设置",
     "config.job.upload.enabled": "控制插件是否会自动将项目源代码上传至 PAI 任务配置文件的 CodeDir",
     "config.job.upload.exclude": "控制排除文件、文件夹的 Glob 模式",

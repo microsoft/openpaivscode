@@ -8,10 +8,8 @@ import * as fs from 'fs-extra';
 import { injectable } from 'inversify';
 import * as yaml from 'js-yaml';
 import { range } from 'lodash';
-import * as NodeRSA from 'node-rsa';
 import * as os from 'os';
 import * as path from 'path';
-import * as SshPK from 'sshpk';
 import {
     commands,
     languages,
@@ -30,7 +28,7 @@ import {
 } from '../../common/constants';
 import { __ } from '../../common/i18n';
 import { getSingleton, Singleton } from '../../common/singleton';
-import { Util } from '../../common/util';
+import { IKeyPair, Util } from '../../common/util';
 import { ClusterManager } from '../clusterManager';
 import { StorageHelper } from '../storage/storageHelper';
 import { IPAICluster } from '../utility/paiInterface';
@@ -40,22 +38,6 @@ import {
     YamlJobConfigRuntimePlugins,
     YamlJobConfigSnippets
 } from './yamlJobConfigCompletionProvider';
-
-export interface IKeyPair {
-    public: string;
-    private: string;
-}
-
-export function generateSSHKeyPair(bits: number = 1024): IKeyPair {
-    const key: NodeRSA = new NodeRSA({ b: bits });
-    const pemPub: string = key.exportKey('pkcs1-public-pem');
-    const pemPri: string = key.exportKey('pkcs1-private-pem');
-
-    const sshKey: SshPK.Key = SshPK.parseKey(pemPub, 'pem');
-    sshKey.comment = 'pai-job-ssh';
-    const sshPub: string = sshKey.toString('ssh');
-    return { public: sshPub, private: pemPri };
-}
 
 /**
  * Manager class for cluster configurations
@@ -246,7 +228,7 @@ export class YamlCommands extends Singleton {
         );
 
         if (item === GENERATE_NEW) {
-            const keyPair: IKeyPair = generateSSHKeyPair();
+            const keyPair: IKeyPair = Util.generateSSHKeyPair();
             const privateKeySaveDir: string = path.join(os.homedir(), 'privateKey.pem');
             const publicKeySaveDir: string = path.join(os.homedir(), 'publicKey.pem');
 

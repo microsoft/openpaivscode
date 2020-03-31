@@ -46,6 +46,7 @@ export const COMMAND_INSERT_JOB_CONFIG = 'paiext.job.config.insert.menu';
 export const COMMAND_CREATE_JOB_CONFIG = 'paiext.cluster.job.create-config';
 export const COMMAND_CREATE_JOB_CONFIG_V1 = 'paiext.cluster.job.create-config-v1';
 export const COMMAND_CREATE_JOB_CONFIG_V2 = 'paiext.cluster.job.create-config-v2';
+export const COMMAND_CREATE_REMOTE_JOB = 'paiext.job.create.remote';
 export const COMMAND_CONTAINER_HDFS_BACK = 'paiext.container.hdfs.back';
 export const COMMAND_CONTAINER_HDFS_REFRESH = 'paiext.container.hdfs.refresh';
 export const COMMAND_CONTAINER_STORAGE_BACK = 'paiext.container.storage.back';
@@ -152,5 +153,7 @@ export const SCHEMA_YAML_JOB_CONFIG = 'pai_yaml_job_config.schema.json';
 export const SCHEMA_YAML_JOB_CONFIG_PATH = path.join(__dirname, `../../schemas/${SCHEMA_YAML_JOB_CONFIG}`);
 
 export const YAML_EXTENSION_ID = 'redhat.vscode-yaml';
+export const REMOTE_SSH_EXTENSION_ID = 'ms-vscode-remote.remote-ssh';
+
 export const OPENPAI_SCHEMA = 'openpai';
 export const OPENPAI_YAML_SCHEMA_PREFIX = OPENPAI_SCHEMA + '://schema/';

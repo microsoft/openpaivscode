@@ -39,7 +39,7 @@ export class StorageHelperClass extends Singleton {
         const storageConfigs: IStorageConfig[] = await client.storage.getConfig();
         const result: { storage: string, mountPoint: string}[] = [];
         storageConfigs.forEach(config => {
-            config.mountInfos.forEach(mountInfo => {
+            config.mountInfos.forEach((mountInfo: { mountPoint: string; }) => {
                 result.push({
                     storage: config.name,
                     mountPoint: mountInfo.mountPoint

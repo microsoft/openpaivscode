@@ -10,8 +10,10 @@ import { injectable } from 'inversify';
 import { SchemaMetadataWriter } from 'json-inline-doc';
 import { dereference, JSONSchema } from 'json-schema-ref-parser';
 import { parse, visit } from 'jsonc-parser';
+import * as NodeRSA from 'node-rsa';
 import * as os from 'os';
 import * as path from 'path';
+import * as SshPK from 'sshpk';
 import * as vscode from 'vscode';
 
 import { __, I18nFormatFunction } from './i18n';
@@ -21,6 +23,11 @@ import unixify = require('unixify'); // tslint:disable-line
 import opn = require('opn'); // tslint:disable-line
 
 export let Util: UtilClass;
+
+export interface IKeyPair {
+    public: string;
+    private: string;
+}
 
 /**
  * Utility class
@@ -170,6 +177,17 @@ export class UtilClass extends Singleton {
     public getRandomString(length: number = 10): string {
         // tslint:disable-next-line: insecure-random
         return Math.random().toString(36).substring(2, length + 2);
+    }
+
+    public generateSSHKeyPair(bits: number = 1024): IKeyPair {
+        const key: NodeRSA = new NodeRSA({ b: bits });
+        const pemPub: string = key.exportKey('pkcs1-public-pem');
+        const pemPri: string = key.exportKey('pkcs1-private-pem');
+
+        const sshKey: SshPK.Key = SshPK.parseKey(pemPub, 'pem');
+        sshKey.comment = 'pai-job-ssh';
+        const sshPub: string = sshKey.toString('ssh');
+        return { public: sshPub, private: pemPri };
     }
 
     public async createTemporaryFile(fileName: string): Promise<string> {
