@@ -1,7 +1,7 @@
 import sys
 import os
 import codecs
-import urlparse
+import urllib.parse
 import markdown # https://python-markdown.github.io/
 
 
@@ -17,7 +17,7 @@ class LinkChecker(markdown.treeprocessors.Treeprocessor):
         for node in root.iter():
             if node.tag == "a":
                 link = node.get("href")
-                url = urlparse.urlparse(link)
+                url = urllib.parse.urlparse(link)
 
                 # TODO check remot links
                 if url.scheme == "" and url.netloc == "": # local link
@@ -62,6 +62,7 @@ def check_all(doc_root):
     broken links will be outputted to stderr """
     has_error = False
     for root, dirs, files in os.walk(doc_root):
+        dirs[:] = [d for d in dirs if d not in 'node_modules']
         for name in files:
             if name.endswith(".md"):
                 path = os.path.join(root, name)
