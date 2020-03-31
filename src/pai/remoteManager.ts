@@ -6,10 +6,12 @@ import { injectable } from 'inversify';
 import * as yaml from 'js-yaml';
 import { OpenPAIClient } from 'openpai-js-sdk';
 import { IJobStatus } from 'openpai-js-sdk/lib/models/job';
+import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
 import {
     commands,
+    extensions,
     window,
     workspace,
     StatusBarAlignment,
@@ -24,6 +26,7 @@ import {
 import {
     COMMAND_CREATE_REMOTE_JOB,
     OCTICON_CLOUDUPLOAD,
+    REMOTE_SSH_EXTENSION_ID,
     SETTING_JOB_GENERATEJOBNAME_ENABLED,
     SETTING_JOB_V2_UPLOAD
 } from '../common/constants';
@@ -46,8 +49,8 @@ import {
  */
 @injectable()
 export class RemoteManager extends Singleton {
-    private static readonly PUBLIC_KEY_FILE_NAME: string = '.pai_remote/public.key';
-    private static readonly PRIVATE_KEY_FILE_NAME: string = '.pai_remote/private.key';
+    private static readonly PUBLIC_KEY_FILE_NAME: string = '.pai_ssh/public.key';
+    private static readonly PRIVATE_KEY_FILE_NAME: string = '.pai_ssh/private.key';
 
     private lastRemoteJobEditorPath: string | undefined;
 
@@ -62,7 +65,21 @@ export class RemoteManager extends Singleton {
         );
     }
 
+    public async activateRemoteSshExtension(): Promise<boolean> {
+        const ext: any = extensions.getExtension(REMOTE_SSH_EXTENSION_ID);
+        if (!ext) {
+            await window.showWarningMessage('Please install \'Remote - SSH\' via the Extensions pane.');
+            return false;
+        }
+
+        return true;
+    }
+
     public async createRemoteJob(input?: ClusterExplorerChildNode): Promise<void> {
+        if (!await this.activateRemoteSshExtension()) {
+            return;
+        }
+
         let cluster: IPAICluster;
         if (input instanceof ClusterExplorerChildNode) {
             const clusterManager: ClusterManager = await getSingleton(ClusterManager);
@@ -74,9 +91,7 @@ export class RemoteManager extends Singleton {
         const job: IPAIJobConfigV2 = await this.generateRemoteJob(cluster, key);
         const jobName: string | undefined = await this.editRemoteJob(job.name + '.pai.yaml', job, cluster);
         if (jobName) {
-            const statusBarItem: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, Number.MAX_VALUE);
-            statusBarItem.text = `${OCTICON_CLOUDUPLOAD} ${__('job.waiting.running')}`;
-            statusBarItem.show();
+            Util.info('job.waiting.running');
 
             const client: OpenPAIClient = new OpenPAIClient({
                 rest_server_uri: cluster.rest_server_uri,
@@ -127,9 +142,9 @@ export class RemoteManager extends Singleton {
                 fs.createFileSync(configPath);
             }
 
-            remoteSettings.update('SSH.configFile', configPath);
+            await remoteSettings.update('SSH.configFile', configPath);
         }
-        const privateKeyPath: string = path.join(this.currentWorkspace(), RemoteManager.PRIVATE_KEY_FILE_NAME);
+        const privateKeyPath: string = path.join(os.homedir(), RemoteManager.PRIVATE_KEY_FILE_NAME);
 
         Object.entries(jobStatus.taskRoles).forEach(([key, value]: [string, any]) => {
             for (const taskStatus of <any[]>value.taskStatuses) {
@@ -208,9 +223,8 @@ export class RemoteManager extends Singleton {
     }
 
     public async generateRemoteKey(): Promise<IKeyPair> {
-        const workspacePath: string = this.currentWorkspace();
-        const privateKeyPath: string = path.join(workspacePath, RemoteManager.PRIVATE_KEY_FILE_NAME);
-        const publicKeyPath: string = path.join(workspacePath, RemoteManager.PUBLIC_KEY_FILE_NAME);
+        const privateKeyPath: string = path.join(os.homedir(), RemoteManager.PRIVATE_KEY_FILE_NAME);
+        const publicKeyPath: string = path.join(os.homedir(), RemoteManager.PUBLIC_KEY_FILE_NAME);
 
         try {
             if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {

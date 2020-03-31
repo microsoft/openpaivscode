@@ -153,5 +153,7 @@ export const SCHEMA_YAML_JOB_CONFIG = 'pai_yaml_job_config.schema.json';
 export const SCHEMA_YAML_JOB_CONFIG_PATH = path.join(__dirname, `../../schemas/${SCHEMA_YAML_JOB_CONFIG}`);
 
 export const YAML_EXTENSION_ID = 'redhat.vscode-yaml';
+export const REMOTE_SSH_EXTENSION_ID = 'ms-vscode-remote.remote-ssh';
+
 export const OPENPAI_SCHEMA = 'openpai';
 export const OPENPAI_YAML_SCHEMA_PREFIX = OPENPAI_SCHEMA + '://schema/';
