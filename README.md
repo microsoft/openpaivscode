@@ -40,15 +40,15 @@ Notice, the version of OpenPAI cluster must equal or greater than 0.8.0, and the
 1. Use shortcut key <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open command palette.
 2. Input and look for *PAI: Add PAI Cluster* as below.
 
-    ![add cluster](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster.png)
+    ![add cluster](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster.png)
 
 3. Press <kbd>Enter</kbd>, and input the host of an OpenPAI cluster. It can be domain name or IP Address. After that, press <kbd>Enter</kbd> again.
 
-    ![add cluster host](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster_host.png)
+    ![add cluster host](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster_host.png)
 
 4. A configuration file is opened, and username and password fields are needed at least. Once it completes, click *Finish* button at right bottom corner. Notice, it won't be effect, if you save and close the file directly.
 
-    ![add cluster configuration](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add-cluster-finish.png)
+    ![add cluster configuration](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add-cluster-finish.png)
 
 If there are multiple OpenPAI clusters, you can follow above steps again to connect with them.
 
@@ -59,15 +59,15 @@ Notice, the version of OpenPAI cluster must equal or greater than 0.14.0, and th
 1. Use shortcut key <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open command palette.
 2. Input and look for *PAI: Add PAI Cluster* as below.
 
-    ![add cluster](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster.png)
+    ![add cluster](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster.png)
 
 3. Press <kbd>Enter</kbd>, and input the host of an OpenPAI cluster. It can be domain name or IP Address. After that, press <kbd>Enter</kbd> again.
 
-    ![add cluster host](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_cluster_host.png)
+    ![add cluster host](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_cluster_host.png)
 
 4. If the `authn_type` of the cluster is `OIDC`, a webside will be open and ask you to login, after that a configuration file is opened, and if your login was successful the username and token fields are auto filled, you can change it if needed. Once it completes, click *Finish* button at right bottom corner. Notice, it won't be effect, if you save and close the file directly.
 
-    ![add cluster configuration](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/add_aad_cluster.gif)
+    ![add cluster configuration](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/add_aad_cluster.gif)
 
 If there are multiple OpenPAI clusters, you can follow above steps again to connect with them.
 
@@ -76,7 +76,7 @@ If there are multiple OpenPAI clusters, you can follow above steps again to conn
 There is a tutorial for OpenPAI job submission, please refer to [Submit job to OpenPAI](documentation/submit_job.md).
 After added a cluster configuration, you can find the cluster in *PAI CLUSTER EXPLORER* pane as below.
 
-![pai cluster explorer](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/pai_cluster_explorer.png)
+![pai cluster explorer](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/pai_cluster_explorer.png)
 
 Submit V2 job (For OpenPAI v0.13.0 and above):
 
@@ -91,7 +91,7 @@ You can create a job v2 configuration and submit to OpenPAI as below steps.
     If there are multiple OpenPAI clusters, you need to choose one.
 
     This animation shows above steps.
-    ![submit job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/submit-job-v2.gif)
+    ![submit job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/submit-job-v2.gif)
 
 Submit V1 Job (deprecating, only for OpenPAI version under 0.13.0):
 
@@ -106,7 +106,7 @@ You can create a job configuration and submit to OpenPAI as below steps.
     If there are multiple OpenPAI clusters, you need to choose one.
 
     This animation shows above steps.
-    ![submit job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/submit-job.gif)
+    ![submit job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/submit-job.gif)
 
 ## Local simulation
 
@@ -121,12 +121,12 @@ As it needs sometime to wait job starting in OpenPAI cluster, local simulation c
 1. As submit a job, you can right click a configuration file to find local simulation.
 2. Click *Simulate PAI Job Running*, after a while below notification shows.
 
-    ![simulate running](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/simulate_running.png)
+    ![simulate running](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/simulate_running.png)
 
 3. you can click on *Simulate first task in VS Code terminal* to simulate directly, or *Reveal in Explorer* to view created docker files and start simulation manually.
 
 This animation shows above steps.
-![simulate job](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/simulate-job.gif)
+![simulate job](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/simulate-job.gif)
 
 ### Limitations
 
@@ -140,7 +140,7 @@ As local simulation is a close but still different environment with OpenPAI clus
 
 ## Source code auto upload
 
-Please refer to [Auto Upload](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/documentation/storage_explorer_and_auto_upload.md#Auto-Upload).
+Please refer to [Auto Upload](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/documentation/storage_explorer_and_auto_upload.md#Auto-Upload).
 
 ## Reference
 
@@ -148,13 +148,13 @@ Please refer to [Auto Upload](https://raw.githubusercontent.com/Microsoft/pai/ma
 
 The client has two GUI parts. First is the *PAI CLUSTER EXPLORER* in explorer and used in above introduction. Second can be opened by the icon in activity bar.
 
-![activity bar](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/activity_bar.png)
+![activity bar](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/activity_bar.png)
 
 There are three parts in the side bar.
 
 - Storage Explorer (For PAI > 0.14.0)
-  
-    Please refer to [Storage Explorer](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/documentation/storage_explorer_and_auto_upload.md#Storage-Explorer).
+
+    Please refer to [Storage Explorer](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/documentation/storage_explorer_and_auto_upload.md#Storage-Explorer).
 
 - HDFS Explorer (For PAI <= 0.14.0)
 
@@ -164,7 +164,7 @@ There are three parts in the side bar.
 
     You can view jobs in OpenPAI cluster. The lists refresh periodically, and the icon shows the status of each job. You can open a job in browser with double clicking it.
 
-![job list](https://raw.githubusercontent.com/Microsoft/pai/master/contrib/pai_vscode/assets/job-list.png)
+![job list](https://raw.githubusercontent.com/Microsoft/openpaivscode/0.3.0/assets/job-list.png)
 
 ### Command Palette
 
@@ -206,7 +206,7 @@ There are three parts in the side bar.
 ### Getting started
 
 1. Install prerequisites:
-   
+
    - latest Visual Studio Code
    - Node.js v10.0.0 or higher
    - yarn v1.17.3 or higher
@@ -230,7 +230,7 @@ There are three parts in the side bar.
 
 ### Debug in vscode
 
-    Press `F5` to launch debug window
+  Press `F5` to launch debug window
 
 ### Package to VSIX
 
@@ -242,11 +242,11 @@ yarn package
 
 Submit at [GitHub](https://github.com/Microsoft/pai/issues)
 
-# Contributing
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+the rights to use your contribution. For details, visit [https://cla.opensource.microsoft.com](https://cla.opensource.microsoft.com).
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
