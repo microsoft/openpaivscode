@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Lint
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  docs:
+    name: Lint docs
+    # The type of runner that the job will run on
+    runs-on: ubuntu-16.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Runs a single command using the runners shell
+    - name: Setup Python
+      uses: actions/setup-python@v1.2.0
+      with:
+        # Version range or exact version of a Python version to use, using SemVer's version range syntax.
+        python-version: 2.7
+        # The target architecture (x86, x64) of the Python interpreter.
+        architecture: x64
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install markdown==2.6.11
+    - name: Lint
+      run: |
+        python documentation/doc_checker.py .
+
+  spelling:
+    name: Spelling check
+    # The type of runner that the job will run on
+    runs-on: ubuntu-16.04
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        curl -L https://git.io/misspell | sudo bash -s -- -b /bin
+    - name: Check spelling
+      run: |
+        rm -rf ./src/watchdog/GOPATH/src/github.com/microsoft/watchdog/vendor/
+        misspell -error .
