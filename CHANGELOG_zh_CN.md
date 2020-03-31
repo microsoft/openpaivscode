@@ -49,3 +49,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - New job list auto refresh rule
   - Job list auto refresh will be trigger only when the `PAI JOB LIST` view is visible.
 - Add notification to website after AAD login success
+
+## [0.3.1] - 2020-03
+
+### Added
+
+- Fix absolute links in document
