@@ -246,7 +246,9 @@ export class RemoteManager extends Singleton {
                 const terminal: Terminal = window.createTerminal('PAI Secure SSH private key');
                 terminal.sendText(`cmd /c Icacls "${privateKeyPath}" /c /t /Inheritance:d`);
                 terminal.sendText(`cmd /c Icacls "${privateKeyPath}" /c /t /Grant %UserName%:F`);
-                terminal.sendText(`cmd /c Icacls "${privateKeyPath}"  /c /t /Remove Administrator BUILTIN\\Administrators BUILTIN Everyone System Users`);
+                terminal.sendText(
+                    `cmd /c Icacls "${privateKeyPath}"  /c /t /Remove Administrator BUILTIN\\Administrators BUILTIN Everyone System Users`
+                );
                 terminal.sendText(`cmd /c Icacls "${privateKeyPath}"`);
 
                 return keyPair;
