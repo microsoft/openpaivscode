@@ -4,7 +4,7 @@
  * @author Microsoft
  */
 
-import { IStorageConfig, IStorageServer, OpenPAIClient } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { TreeItemCollapsibleState } from 'vscode';
 
 import {
@@ -20,6 +20,8 @@ import { IPAICluster } from '../../utility/paiInterface';
 import { StorageTreeNode } from '../common/treeNode';
 
 import { TeamStorageTreeNode } from './teamStorageTreeItem';
+
+import OpenPAIClient = PAIV2.OpenPAIClient;
 
 /**
  * PAI cluster storage tree node.
@@ -48,11 +50,9 @@ export class ClusterStorageTreeNode extends StorageTreeNode {
                 password: this.cluster.password,
                 https: this.cluster.https
             });
-            const storageServers: Map<string, IStorageServer> =
-                new Map((await client.storage.getServer()).map(server => [server.spn, server]));
-            const storageConfigs: IStorageConfig[] = await client.storage.getConfig();
-            this.children = storageConfigs.map(config =>
-                new TeamStorageTreeNode(config, storageServers, this.cluster, client, this));
+            const storageSummary: PAIV2.IStorageSummary = await client.storage.getStorages();
+            this.children = storageSummary.storages.map(summary =>
+                new TeamStorageTreeNode(summary.name, this.cluster, client, this));
         } catch (e) {
             Util.err('treeview.storage.error', [e.message || e]);
         }

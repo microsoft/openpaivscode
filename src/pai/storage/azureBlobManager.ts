@@ -26,7 +26,7 @@ import { Util } from '../../common/util';
 import { StorageTreeNode } from '../container/common/treeNode';
 import {
     AzureBlobRootItem, AzureBlobTreeItem, BlobEntity, BlobIter, BlobValue
-} from '../container/storage/azureBlobTreeItem';
+} from '../container/storage/storageSubItems/azureBlobTreeItem';
 
 /**
  * Azure blob management module

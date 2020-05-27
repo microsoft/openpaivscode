@@ -13,7 +13,7 @@ import {
     ContainerListBlobHierarchySegmentResponse,
     StorageSharedKeyCredential
 } from '@azure/storage-blob';
-import { IStorageServer } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import * as path from 'path';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
@@ -27,13 +27,13 @@ import {
     ICON_FILE,
     ICON_FOLDER,
     ICON_STORAGE
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { getSingleton } from '../../../common/singleton';
-import { Util } from '../../../common/util';
-import { AzureBlobManager } from '../../storage/azureBlobManager';
-import { RemoteFileEditor } from '../../utility/remoteFileEditor';
-import { StorageLoadMoreTreeNode, StorageTreeNode } from '../common/treeNode';
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { getSingleton } from '../../../../common/singleton';
+import { Util } from '../../../../common/util';
+import { AzureBlobManager } from '../../../storage/azureBlobManager';
+import { RemoteFileEditor } from '../../../utility/remoteFileEditor';
+import { StorageLoadMoreTreeNode, StorageTreeNode } from '../../common/treeNode';
 
 export type BlobIter = PagedAsyncIterableIterator<({
         kind: 'prefix';
@@ -212,15 +212,15 @@ export class AzureBlobTreeItem extends StorageTreeNode {
  * PAI azure blob storage root item.
  */
 export class AzureBlobRootItem extends StorageTreeNode {
-    public storage: IStorageServer;
+    public storage: PAIV2.IStorageDetail;
     public client: ContainerClient;
     public rootPath: string;
 
     private currentContinuationToken?: string;
     private currentPrefixes: Map<string, AzureBlobTreeItem>;
 
-    public constructor(storage: IStorageServer, rootPath: string, parent: StorageTreeNode) {
-        super(storage.spn, parent, TreeItemCollapsibleState.Collapsed);
+    public constructor(storage: PAIV2.IStorageDetail, rootPath: string, parent: StorageTreeNode) {
+        super(storage.name, parent, TreeItemCollapsibleState.Collapsed);
         this.storage = storage;
         this.contextValue = CONTEXT_STORAGE_AZURE_BLOB;
         this.description = 'Azure Blob';
@@ -229,10 +229,10 @@ export class AzureBlobRootItem extends StorageTreeNode {
         this.currentPrefixes = new Map<string, AzureBlobTreeItem>();
 
         const credential: StorageSharedKeyCredential =
-            new StorageSharedKeyCredential(storage.data.accountName, storage.data.key);
+            new StorageSharedKeyCredential((<any>storage.data).accountName, (<any>storage.data).key);
         const blobClient: BlobServiceClient = new BlobServiceClient(
-            `https://${storage.data.accountName}.blob.core.windows.net`, credential);
-        this.client = blobClient.getContainerClient(storage.data.containerName);
+            `https://${(<any>storage.data).accountName}.blob.core.windows.net`, credential);
+        this.client = blobClient.getContainerClient((<any>storage.data).containerName);
     }
 
     public async refresh(): Promise<void> {

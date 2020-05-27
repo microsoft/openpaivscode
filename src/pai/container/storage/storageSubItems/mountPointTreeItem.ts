@@ -4,19 +4,19 @@
  * @author Microsoft
  */
 
-import { IMountInfo, IStorageServer } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
 import {
     CONTEXT_STORAGE_MOUNTPOINT_ITEM
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { IPAICluster } from '../../utility/paiInterface';
-import { StorageTreeNode } from '../common/treeNode';
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { IPAICluster } from '../../../utility/paiInterface';
+import { StorageTreeNode } from '../../common/treeNode';
 
 import { AzureBlobRootItem } from './azureBlobTreeItem';
 import { NfsRootNode } from './NfsTreeItem';
-import { SambaRootNode } from './SambaTreeItem';
+import { SambaRootNode } from './sambaTreeItem';
 
 /**
  * PAI storage mount point tree node.
@@ -27,17 +27,16 @@ export class MountPointTreeNode extends StorageTreeNode {
     public cluster: IPAICluster;
 
     constructor(
-        info: IMountInfo,
+        storage: PAIV2.IStorageDetail,
         cluster: IPAICluster,
-        server: IStorageServer,
         parent?: StorageTreeNode,
         collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed
     ) {
         super('Mount Point', parent, collapsibleState);
-        this.description = info.mountPoint;
+        this.description = this.getMountPointPath(storage);
 
         this.cluster = cluster;
-        this.data = this.initializeData(info, server);
+        this.data = this.initializeData(storage);
     }
 
     public async refresh(): Promise<void> {
@@ -60,32 +59,22 @@ export class MountPointTreeNode extends StorageTreeNode {
         await this.data.createFolder(folder);
     }
 
-    private initializeData(info: IMountInfo, server: IStorageServer): StorageTreeNode {
-        switch (server.type) {
-            case 'azureblob':
-                return new AzureBlobRootItem(server, this.getRootPath(info, this.cluster), this);
-            case 'azurefile':
+    private initializeData(storageDetail: PAIV2.IStorageDetail): StorageTreeNode {
+        switch (storageDetail.type) {
+            case 'azureBlob':
+                return new AzureBlobRootItem(storageDetail, '', this);
+            case 'azureFile':
                 return new StorageTreeNode('Azure File');
             case 'nfs':
-                return new NfsRootNode(server, info, this);
+                return new NfsRootNode(storageDetail, this);
             case 'samba':
-                return new SambaRootNode(server, info.mountPoint, this);
+                return new SambaRootNode(storageDetail, this);
             default:
                 return new StorageTreeNode('Unsupported storage');
         }
     }
 
-    private getRootPath(info: IMountInfo, cluster: IPAICluster): string {
-        const envs: Map<string, string> = new Map<string, string>([
-            ['\${PAI_USER_NAME}', cluster.username!]
-        ]);
-        let path: string = info.path;
-        for (const [key, value] of envs) {
-            path = path.replace(key, value);
-        }
-        if (!path.endsWith('/')) {
-            path = path + '/';
-        }
-        return path;
+    private getMountPointPath(storageDetail: PAIV2.IStorageDetail): string {
+        return `/mnt/${storageDetail.name}`;
     }
 }

@@ -15,13 +15,13 @@ import {
     CONTEXT_STORAGE_FOLDER,
     ICON_FILE,
     ICON_FOLDER
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { getSingleton } from '../../../common/singleton';
-import { Util } from '../../../common/util';
-import { PathBaseStorageManager } from '../../storage/pathBaseStorageManager';
-import { RemoteFileEditor } from '../../utility/remoteFileEditor';
-import { StorageTreeNode } from '../common/treeNode';
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { getSingleton } from '../../../../common/singleton';
+import { Util } from '../../../../common/util';
+import { PathBaseStorageManager } from '../../../storage/pathBaseStorageManager';
+import { RemoteFileEditor } from '../../../utility/remoteFileEditor';
+import { StorageTreeNode } from '../../common/treeNode';
 
 /**
  * PAI path base storage tree node.

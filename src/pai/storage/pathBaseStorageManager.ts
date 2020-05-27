@@ -15,10 +15,10 @@ import {
 } from '../../common/constants';
 import { __ } from '../../common/i18n';
 import { Util } from '../../common/util';
-import { MountPointTreeNode } from '../container/storage/mountPointTreeItem';
-import { NfsRootNode } from '../container/storage/NfsTreeItem';
-import { PathBaseTreeNode } from '../container/storage/pathBaseTreeItem';
-import { SambaRootNode } from '../container/storage/SambaTreeItem';
+import { MountPointTreeNode } from '../container/storage/storageSubItems/mountPointTreeItem';
+import { NfsRootNode } from '../container/storage/storageSubItems/NfsTreeItem';
+import { PathBaseTreeNode } from '../container/storage/storageSubItems/pathBaseTreeItem';
+import { SambaRootNode } from '../container/storage/storageSubItems/sambaTreeItem';
 
 /**
  * Path base storage management module, used in Samba and NFS.

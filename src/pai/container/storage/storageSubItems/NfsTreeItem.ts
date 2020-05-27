@@ -5,9 +5,9 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import * as fs from 'fs-extra';
 import { Dictionary } from 'lodash';
-import { IMountInfo, IStorageServer } from 'openpai-js-sdk';
 import * as os from 'os';
 import * as path from 'path';
 import { workspace, Uri, WorkspaceConfiguration } from 'vscode';
@@ -20,10 +20,10 @@ import {
     CONTEXT_STORAGE_NFS,
     SETTING_SECTION_STORAGE_NFS,
     SETTING_STORAGE_NFS_MOUNT_POINT
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { PathBaseStorageManager } from '../../storage/pathBaseStorageManager';
-import { StorageTreeNode } from '../common/treeNode';
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { PathBaseStorageManager } from '../../../storage/pathBaseStorageManager';
+import { StorageTreeNode } from '../../common/treeNode';
 
 import { MountPointTreeNode } from './mountPointTreeItem';
 import { PathBaseTreeNode } from './pathBaseTreeItem';
@@ -32,17 +32,15 @@ import { PathBaseTreeNode } from './pathBaseTreeItem';
  * PAI NFS storage root node.
  */
 export class NfsRootNode extends StorageTreeNode {
-    public storageServer: IStorageServer;
-    public mountInfo: IMountInfo;
+    public storage: PAIV2.IStorageDetail;
     public setupMountPoint: boolean = false;
     public rootPath?: string;
 
-    constructor(storage: IStorageServer, info: IMountInfo, parent: StorageTreeNode) {
-        super(storage.spn, parent);
+    constructor(storage: PAIV2.IStorageDetail, parent: StorageTreeNode) {
+        super(storage.name, parent);
         this.contextValue = CONTEXT_STORAGE_NFS;
-        this.storageServer = storage;
+        this.storage = storage;
         this.description = 'NFS';
-        this.mountInfo = info;
         this.loadRootPath();
     }
 
@@ -51,8 +49,8 @@ export class NfsRootNode extends StorageTreeNode {
             workspace.getConfiguration(SETTING_SECTION_STORAGE_NFS);
         const clusterName: string = (<MountPointTreeNode>this.parent).contextValue === CONTEXT_STORAGE_MOUNTPOINT_ITEM ?
                 (<MountPointTreeNode>this.parent).cluster.name! : 'personal_storage';
-        const storageName: string = this.storageServer.spn;
-        const key: string = this.generateMountConfigKey(clusterName, storageName, this.mountInfo.mountPoint);
+        const storageName: string = this.storage.name;
+        const key: string = this.generateMountConfigKey(clusterName, storageName);
         const map: Dictionary<string> | undefined =
             settings.get(SETTING_STORAGE_NFS_MOUNT_POINT);
         if (map !== null && map![key]) {
@@ -80,8 +78,8 @@ export class NfsRootNode extends StorageTreeNode {
                     new StorageTreeNode(__('treeview.storage.nfs.mount'), this.parent);
                 const clusterName: string = (<MountPointTreeNode>this.parent).contextValue === CONTEXT_STORAGE_MOUNTPOINT_ITEM ?
                     (<MountPointTreeNode>this.parent).cluster.name! : 'personal_storage';
-                const storageName: string = this.storageServer.spn;
-                const key: string = this.generateMountConfigKey(clusterName, storageName, this.mountInfo.mountPoint);
+                const storageName: string = this.storage.name;
+                const key: string = this.generateMountConfigKey(clusterName, storageName);
                 const settings: WorkspaceConfiguration =
                     workspace.getConfiguration(SETTING_SECTION_STORAGE_NFS);
                 const map: Dictionary<string> | undefined =
@@ -100,8 +98,8 @@ export class NfsRootNode extends StorageTreeNode {
                 new StorageTreeNode(__('treeview.storage.nfs.setup.mount.point'), this.parent);
             const clusterName: string = (<MountPointTreeNode>this.parent).contextValue === CONTEXT_STORAGE_MOUNTPOINT_ITEM ?
                 (<MountPointTreeNode>this.parent).cluster.name! : 'personal_storage';
-            const storageName: string = this.storageServer.spn;
-            const key: string = this.generateMountConfigKey(clusterName, storageName, this.mountInfo.mountPoint);
+            const storageName: string = this.storage.name;
+            const key: string = this.generateMountConfigKey(clusterName, storageName);
             setupNfsMountPoint.command = {
                 title: __('pai.storage.nfs.mountPoint'),
                 command: COMMAND_TREEVIEW_DOUBLECLICK,
@@ -131,7 +129,7 @@ export class NfsRootNode extends StorageTreeNode {
         }
     }
 
-    private generateMountConfigKey(clusterName: string, storageName: string, mountPoint: string): string {
-        return `${clusterName}~${storageName}~${mountPoint}`;
+    private generateMountConfigKey(clusterName: string, storageName: string): string {
+        return `${clusterName}~${storageName}`;
     }
 }

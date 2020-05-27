@@ -4,7 +4,7 @@
  * @author Microsoft
  */
 
-import { IStorageConfig, IStorageServer, OpenPAIClient } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { TreeItemCollapsibleState } from 'vscode';
 
 import {
@@ -15,7 +15,7 @@ import { Util } from '../../../common/util';
 import { IPAICluster } from '../../utility/paiInterface';
 import { StorageTreeNode } from '../common/treeNode';
 
-import { MountPointTreeNode } from './mountPointTreeItem';
+import { MountPointTreeNode } from './storageSubItems/mountPointTreeItem';
 
 /**
  * PAI storage mount point tree node.
@@ -23,31 +23,36 @@ import { MountPointTreeNode } from './mountPointTreeItem';
 export class TeamStorageTreeNode extends StorageTreeNode {
     public readonly contextValue: string = CONTEXT_STORAGE_TEAM_ITEM;
 
-    private config: IStorageConfig;
-    private servers: Map<string, IStorageServer>;
-    private client: OpenPAIClient;
+    private storageName: string;
+    private storageDetail?: PAIV2.IStorageDetail;
+    private client: PAIV2.OpenPAIClient;
     private cluster: IPAICluster;
 
     constructor(
-        config: IStorageConfig,
-        servers: Map<string, IStorageServer>,
+        storageName: string,
         cluster: IPAICluster,
-        client: OpenPAIClient,
+        client: PAIV2.OpenPAIClient,
         parent?: StorageTreeNode,
         collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed
     ) {
-        super(config.name, parent, collapsibleState);
-        this.config = config;
-        this.servers = servers;
+        super(storageName, parent, collapsibleState);
+        this.storageName = storageName;
         this.client = client;
         this.cluster = cluster;
         this.iconPath = Util.resolvePath(ICON_STORAGE);
     }
 
-    public loadMountPoints(): void {
+    public async getStorageDetail(): Promise<void> {
         try {
-            this.children = this.config.mountInfos.map(mountPoint =>
-                new MountPointTreeNode(mountPoint, this.cluster, this.servers.get(mountPoint.server)!, this));
+            if (this.storageDetail) {
+                this.children = [
+                    new MountPointTreeNode(this.storageDetail, this.cluster, this)
+                ];
+            } else {
+                this.children = [
+                    new StorageTreeNode('Empty', this)
+                ];
+            }
         } catch (e) {
             Util.err('treeview.storage.error', [e.message || e]);
         }
@@ -55,8 +60,8 @@ export class TeamStorageTreeNode extends StorageTreeNode {
 
     public async refresh(): Promise<void> {
         try {
-            this.config = await this.client.storage.getConfigByName(this.config.name);
-            this.loadMountPoints();
+            this.storageDetail = await this.client.storage.getStorage(this.storageName);
+            await this.getStorageDetail();
         } catch (e) {
             Util.err('treeview.storage.error', [e.message || e]);
         }

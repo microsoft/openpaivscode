@@ -20,8 +20,8 @@ import { __ } from '../../common/i18n';
 import { getSingleton, Singleton } from '../../common/singleton';
 import { Util } from '../../common/util';
 import { StorageTreeNode } from '../container/common/treeNode';
-import { MountPointTreeNode } from '../container/storage/mountPointTreeItem';
-import { NfsRootNode } from '../container/storage/NfsTreeItem';
+import { MountPointTreeNode } from '../container/storage/storageSubItems/mountPointTreeItem';
+import { NfsRootNode } from '../container/storage/storageSubItems/NfsTreeItem';
 import { StorageTreeDataProvider } from '../container/storage/storageTreeView';
 
 /**
