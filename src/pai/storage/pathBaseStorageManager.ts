@@ -120,16 +120,18 @@ export class PathBaseStorageManager {
             `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [0, files.length])}`;
         statusBarItem.show();
         try {
+            let fileNames: string = '';
             for (const [i, file] of files.entries()) {
                 const name: string = path.basename(file.fsPath);
                 const targetPath: string = path.join((<any>target).rootPath, name);
+                fileNames += name;
                 statusBarItem.text =
                     `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [i, files.length])}`;
                 await fs.copy(file.fsPath, targetPath);
             }
-            Util.info('storage.upload.success');
+            Util.info('storage.upload.success', fileNames);
         } catch (err) {
-            Util.err('storage.upload.error', [err]);
+            Util.err('storage.upload.error', ['', err]);
         }
         statusBarItem.dispose();
     }
@@ -156,16 +158,18 @@ export class PathBaseStorageManager {
             `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [0, folders.length])}`;
         statusBarItem.show();
         try {
+            let fileNames: string = '';
             for (const [i, folder] of folders.entries()) {
                 const name: string = path.basename(folder.fsPath);
                 const targetPath: string = path.join((<any>target).rootPath, name);
+                fileNames += name;
                 statusBarItem.text =
                     `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [i, folders.length])}`;
                 await fs.copy(folder.fsPath, targetPath);
             }
-            Util.info('storage.upload.success');
+            Util.info('storage.upload.success', fileNames);
         } catch (err) {
-            Util.err('storage.upload.error', [err]);
+            Util.err('storage.upload.error', ['', err]);
         }
         statusBarItem.dispose();
     }

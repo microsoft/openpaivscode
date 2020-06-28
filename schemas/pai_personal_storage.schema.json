@@ -1,14 +1,18 @@
 {
     "type": "object",
     "properties": {
-        "spn": {
+        "name": {
             "type": "string",
             "description": "storage server display name",
             "minLength": 1
         },
+        "type": {
+            "type": "string",
+            "enum": ["nfs", "samba", "azureFile", "azureBlob"]
+        },
         "data": {
             "type": "object",
-            "description": "Azure blob",
+            "description": "Azure blob Example",
             "properties": {
                 "containerName": {
                     "type": "string"
@@ -16,11 +20,17 @@
                 "accountName": {
                     "type": "string"
                 },
-                "key": {
-                    "type": "string"
+                "accountKey": {
+                    "type": "string",
+                    "description": "Please remove this line if use SAS Token."
+                },
+                "accountSASToken": {
+                    "type": "string",
+                    "description": "Please remove this line if use Account Key."
                 }
             },
             "additionalProperties": true
         }
-    }
+    },
+    "additionalProperties": true
 }

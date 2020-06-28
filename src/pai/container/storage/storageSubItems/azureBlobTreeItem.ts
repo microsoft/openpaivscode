@@ -14,6 +14,7 @@ import {
     StorageSharedKeyCredential
 } from '@azure/storage-blob';
 import { PAIV2 } from '@microsoft/openpai-js-sdk';
+import { IAzureBlobCfg } from '@microsoft/openpai-js-sdk/lib/src/storage/clients/azureBlobClient';
 import * as path from 'path';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
@@ -228,11 +229,22 @@ export class AzureBlobRootItem extends StorageTreeNode {
         this.iconPath = Uri.file(Util.resolvePath(ICON_STORAGE));
         this.currentPrefixes = new Map<string, AzureBlobTreeItem>();
 
-        const credential: StorageSharedKeyCredential =
-            new StorageSharedKeyCredential((<any>storage.data).accountName, (<any>storage.data).key);
-        const blobClient: BlobServiceClient = new BlobServiceClient(
-            `https://${(<any>storage.data).accountName}.blob.core.windows.net`, credential);
-        this.client = blobClient.getContainerClient((<any>storage.data).containerName);
+        const azureBlobConfig: IAzureBlobCfg = <IAzureBlobCfg>storage.data;
+
+        if (azureBlobConfig.accountKey) { // use the accountKey
+            const credential: StorageSharedKeyCredential =
+                new StorageSharedKeyCredential(azureBlobConfig.accountName!, azureBlobConfig.accountKey!);
+            const blobClient: BlobServiceClient = new BlobServiceClient(
+                `https://${azureBlobConfig.accountName}.blob.core.windows.net`, credential);
+            this.client = blobClient.getContainerClient(azureBlobConfig.containerName);
+        } else { // SAS token
+            let url: string = azureBlobConfig.accountSASToken!;
+            if (!url.startsWith('https://')) {
+                url = `https://${azureBlobConfig.accountName}.blob.core.windows.net${azureBlobConfig.accountSASToken}`;
+            }
+            const blobClient: BlobServiceClient = new BlobServiceClient(url);
+            this.client = blobClient.getContainerClient(azureBlobConfig.containerName);
+        }
     }
 
     public async refresh(): Promise<void> {

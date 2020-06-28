@@ -60,17 +60,21 @@ export class MountPointTreeNode extends StorageTreeNode {
     }
 
     private initializeData(storageDetail: PAIV2.IStorageDetail): StorageTreeNode {
-        switch (storageDetail.type) {
-            case 'azureBlob':
-                return new AzureBlobRootItem(storageDetail, '', this);
-            case 'azureFile':
-                return new StorageTreeNode('Azure File');
-            case 'nfs':
-                return new NfsRootNode(storageDetail, this);
-            case 'samba':
-                return new SambaRootNode(storageDetail, this);
-            default:
-                return new StorageTreeNode('Unsupported storage');
+        try {
+            switch (storageDetail.type) {
+                case 'azureBlob':
+                    return new AzureBlobRootItem(storageDetail, '', this);
+                case 'azureFile':
+                    return new StorageTreeNode('Azure File');
+                case 'nfs':
+                    return new NfsRootNode(storageDetail, this);
+                case 'samba':
+                    return new SambaRootNode(storageDetail, this);
+                default:
+                    return new StorageTreeNode('Unsupported storage');
+            }
+        } catch (err) {
+            return new StorageTreeNode(err.message);
         }
     }
 

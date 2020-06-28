@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import * as fs from 'fs-extra';
 import { injectable } from 'inversify';
 import * as yaml from 'js-yaml';
-import { OpenPAIClient } from 'openpai-js-sdk';
-import { IJobStatus } from 'openpai-js-sdk/lib/models/job';
 import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
@@ -93,7 +92,7 @@ export class RemoteManager extends Singleton {
         if (jobName) {
             Util.info('job.waiting.running');
 
-            const client: OpenPAIClient = new OpenPAIClient({
+            const client: PAIV2.OpenPAIClient = new PAIV2.OpenPAIClient({
                 rest_server_uri: cluster.rest_server_uri,
                 token: cluster.token,
                 username: cluster.username,
@@ -102,9 +101,9 @@ export class RemoteManager extends Singleton {
             });
 
             try {
-                let jobStatus: IJobStatus;
+                let jobStatus: PAIV2.IJobStatus;
                 while (true) {
-                    jobStatus = <IJobStatus>await client.job.getFrameworkInfo(cluster.username!, jobName);
+                    jobStatus = <PAIV2.IJobStatus>await client.job.getJob(cluster.username!, jobName);
                     if (jobStatus.jobStatus.state === 'WAITING') {
                         await delay(1000);
                     } else {
@@ -127,7 +126,7 @@ export class RemoteManager extends Singleton {
         }
     }
 
-    public async remoteJob(jobStatus: IJobStatus): Promise<void> {
+    public async remoteJob(jobStatus: PAIV2.IJobStatus): Promise<void> {
         const remoteSettings: WorkspaceConfiguration = workspace.getConfiguration('remote');
         let configPath: string;
         if (remoteSettings.get('SSH.configFile')) {

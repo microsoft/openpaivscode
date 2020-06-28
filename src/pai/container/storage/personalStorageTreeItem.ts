@@ -4,7 +4,7 @@
  * @author Microsoft
  */
 
-import { IMountInfo, IStorageServer } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
 import {
@@ -27,21 +27,19 @@ import { SambaRootNode } from './storageSubItems/sambaTreeItem';
  */
 export class PersonalStorageTreeNode extends StorageTreeNode {
     public readonly contextValue: string = CONTEXT_STORAGE_PERSONAL_ITEM;
-    public storage: IStorageServer;
     public data: StorageTreeNode;
     public index: number;
 
     constructor(
-        storage: IStorageServer,
+        storage: PAIV2.IStorageDetail,
         index: number,
         parent?: StorageTreeNode,
         collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed
     ) {
-        super(storage.spn, parent, collapsibleState);
+        super(storage.name, parent, collapsibleState);
         this.iconPath = Util.resolvePath(ICON_STORAGE);
         this.index = index;
-        this.storage = storage;
-        this.data = this.initializeData();
+        this.data = this.initializeData(storage);
     }
 
     public async refresh(): Promise<void> {
@@ -68,18 +66,22 @@ export class PersonalStorageTreeNode extends StorageTreeNode {
         await this.data.createFolder(folder);
     }
 
-    public initializeData(): StorageTreeNode {
-        switch (this.storage.type) {
-            case 'azureblob':
-                return new AzureBlobRootItem(this.storage, '', this);
-            case 'azurefile':
-                return new StorageTreeNode('Azure File');
-            case 'nfs':
-                return new NfsRootNode(this.storage, <IMountInfo>{ mountPoint: '' }, this);
-            case 'samba':
-                return new SambaRootNode(this.storage, '', this);
-            default:
-                return new StorageTreeNode('Unsupported storage');
+    private initializeData(storageDetail: PAIV2.IStorageDetail): StorageTreeNode {
+        try {
+            switch (storageDetail.type) {
+                case 'azureBlob':
+                    return new AzureBlobRootItem(storageDetail, '', this);
+                case 'azureFile':
+                    return new StorageTreeNode('Azure File');
+                case 'nfs':
+                    return new NfsRootNode(storageDetail, this);
+                case 'samba':
+                    return new SambaRootNode(storageDetail, this);
+                default:
+                    return new StorageTreeNode('Unsupported storage');
+            }
+        } catch (err) {
+            return new StorageTreeNode(err.message);
         }
     }
 }
@@ -96,7 +98,7 @@ export class PersonalStorageRootNode extends StorageTreeNode {
 
     public async refresh(): Promise<void> {
         const personalStorageManager: PersonalStorageManager = await getSingleton(PersonalStorageManager);
-        const storages: IStorageServer[] = personalStorageManager.allConfigurations;
+        const storages: PAIV2.IStorageDetail[] = personalStorageManager.allConfigurations;
 
         this.children = storages.map((storage, index) => new PersonalStorageTreeNode(storage, index, this));
     }

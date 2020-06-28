@@ -158,17 +158,19 @@ export class AzureBlobManager {
             `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [0, files.length])}`;
         statusBarItem.show();
         try {
+            let fileNames: string = '';
             for (const [i, file] of files.entries()) {
                 const name: string = path.basename(file.fsPath);
                 const blobName: string = path.join(target.rootPath, name);
+                fileNames += name;
                 statusBarItem.text =
                     `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [i, files.length])}`;
                 const client: BlockBlobClient = target.client.getBlockBlobClient(blobName);
                 await client.uploadFile(file.fsPath);
             }
-            Util.info('storage.upload.success');
+            Util.info('storage.upload.success', fileNames);
         } catch (err) {
-            Util.err('storage.upload.error', [err]);
+            Util.err('storage.upload.error', ['', err]);
         }
         statusBarItem.dispose();
     }

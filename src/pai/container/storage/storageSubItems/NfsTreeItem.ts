@@ -85,7 +85,7 @@ export class NfsRootNode extends StorageTreeNode {
                 const map: Dictionary<string> | undefined =
                     settings.get(SETTING_STORAGE_NFS_MOUNT_POINT);
                 setupNfsMountPoint.command = {
-                    title: __('pai.storage.nfs.mountPoint'),
+                    title: __('storage.nfs.mountPoint'),
                     command: COMMAND_TREEVIEW_DOUBLECLICK,
                     arguments: [COMMAND_STORAGE_NFS_MOUNT, this, map![key]]
                 };
@@ -101,7 +101,7 @@ export class NfsRootNode extends StorageTreeNode {
             const storageName: string = this.storage.name;
             const key: string = this.generateMountConfigKey(clusterName, storageName);
             setupNfsMountPoint.command = {
-                title: __('pai.storage.nfs.mountPoint'),
+                title: __('storage.nfs.mountPoint'),
                 command: COMMAND_TREEVIEW_DOUBLECLICK,
                 arguments: [COMMAND_STORAGE_NFS_MOUNT_POINT, this, key]
             };
