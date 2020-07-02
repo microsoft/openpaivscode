@@ -4,8 +4,8 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { injectable } from 'inversify';
-import { IStorageServer } from 'openpai-js-sdk';
 import { commands, window } from 'vscode';
 
 import {
@@ -18,7 +18,7 @@ import { StorageTreeDataProvider } from '../container/storage/storageTreeView';
 
 export interface IStorageConfiguration {
     readonly version: string;
-    storages: IStorageServer[];
+    storages: PAIV2.IStorageDetail[];
 }
 
 /**
@@ -28,7 +28,7 @@ export interface IStorageConfiguration {
 export class PersonalStorageManager extends Singleton {
     private static readonly CONF_KEY: string = 'openpai.personal.storage';
     private static readonly default: IStorageConfiguration = {
-        version: '0.0.1',
+        version: '0.0.2',
         storages: []
     };
     private configuration: IStorageConfiguration | undefined;
@@ -37,7 +37,7 @@ export class PersonalStorageManager extends Singleton {
         super();
     }
 
-    public get allConfigurations(): IStorageServer[] {
+    public get allConfigurations(): PAIV2.IStorageDetail[] {
         return this.configuration!.storages;
     }
 
@@ -102,26 +102,27 @@ export class PersonalStorageManager extends Singleton {
             return;
         }
 
-        const config: IStorageServer = {
-            spn: name,
-            type: 'azureblob',
+        const config: PAIV2.IStorageDetail = {
+            name: name,
+            share: false,
+            volumeName: `pv-${name}`,
+            type: 'azureBlob',
             data: {
-                dataStore: 'dataStore',
                 containerName: '<container name>',
                 accountName: '<account name>',
-                key: '<key>'
-            },
-            extension: { }
+                accountKey: '<account key>',
+                accountSASToken: '<account SAS Token>'
+            }
         };
 
         await this.edit(this.allConfigurations.length, config);
     }
 
-    public async edit(index: number, config?: IStorageServer): Promise<void> {
-        const original: IStorageServer = this.allConfigurations[index] || config;
-        const editResult: IStorageServer | undefined = await Util.editJSON(
+    public async edit(index: number, config?: PAIV2.IStorageDetail): Promise<void> {
+        const original: PAIV2.IStorageDetail = this.allConfigurations[index] || config;
+        const editResult: PAIV2.IStorageDetail | undefined = await Util.editJSON(
             original,
-            `pai_personal_storage_${original.spn}.json`,
+            `pai_personal_storage_${original.name}.json`,
             'pai_personal_storage.schema.json'
         );
         if (editResult) {

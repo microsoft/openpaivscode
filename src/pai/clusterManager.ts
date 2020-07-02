@@ -4,9 +4,9 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { injectable } from 'inversify';
 import { clone, range } from 'lodash';
-import { IAuthnInfo, ILoginInfo, OpenPAIClient } from 'openpai-js-sdk';
 import * as request from 'request-promise-native';
 import * as vscode from 'vscode';
 
@@ -145,14 +145,14 @@ export class ClusterManager extends Singleton {
 
     public async autoAddOIDCUserInfo(cluster: IPAICluster): Promise<void> {
         try {
-            const client: OpenPAIClient = new OpenPAIClient({
+            let client: PAIV2.OpenPAIClient = new PAIV2.OpenPAIClient({
                 rest_server_uri: Util.fixURL(cluster.rest_server_uri, cluster.https)
             });
 
-            const authnInfo: IAuthnInfo = await client.authn.info();
+            const clusterInfo: PAIV2.IPAIClusterInfo = await client.api.getClusterInfo();
 
-            if (authnInfo.authn_type === 'OIDC') {
-                const loginInfo: ILoginInfo = await login(
+            if (clusterInfo.authnMethod === 'OIDC') {
+                const loginInfo: PAIV2.ILoginInfo = await login(
                     `https://${cluster.rest_server_uri}`,
                     `https://${cluster.web_portal_uri}`,
                     async () => {
@@ -172,7 +172,11 @@ export class ClusterManager extends Singleton {
                 let clusterToken: string = loginInfo.token;
 
                 try {
-                    const response: any = await client.authn.createApplicationToken(clusterToken);
+                    client = new PAIV2.OpenPAIClient({
+                        rest_server_uri: Util.fixURL(cluster.rest_server_uri, cluster.https),
+                        token: clusterToken
+                    });
+                    const response: any = await client.token.createApplicationToken();
                     clusterToken = response.token;
                 } catch (error) {
                     console.log('Get application token fail, use user token.');

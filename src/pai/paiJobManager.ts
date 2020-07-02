@@ -4,13 +4,13 @@
  * @author Microsoft
  */
 
+import { PAIV1 } from '@microsoft/openpai-js-sdk';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
 import { injectable } from 'inversify';
 import * as yaml from 'js-yaml';
 import * as JSONC from 'jsonc-parser';
 import { isEmpty, isNil, range } from 'lodash';
-import { IJobConfigV1 } from 'openpai-js-sdk/lib/models/job';
 import opn = require('opn'); // tslint:disable-line
 import * as os from 'os';
 import * as path from 'path';
@@ -1133,7 +1133,7 @@ export class PAIJobManager extends Singleton {
     }
 
     private async uploadCode(param: IJobParam): Promise<boolean> {
-        const config: IJobConfigV1 = <IJobConfigV1>param.config;
+        const config: PAIV1.IJobConfig = <PAIV1.IJobConfig>param.config;
 
         if (!param.cluster!.webhdfs_uri) {
             Util.err('pai.webhdfs.missing');
@@ -1197,14 +1197,13 @@ export class PAIJobManager extends Singleton {
 
     private async uploadCodeV2(param: IJobParam): Promise<boolean> {
         const config: IPAIJobConfigV2 = <IPAIJobConfigV2>param.config;
+        const uploadConfig: IUploadConfig = <IUploadConfig>param.upload;
 
         try {
             const projectFiles: string[] = await globby(param.upload!.include, {
                 cwd: param.workspace, onlyFiles: true, absolute: true,
                 ignore: param.upload!.exclude || []
             });
-
-            const uploadConfig: IUploadConfig = <IUploadConfig>param.upload;
             const total: number = projectFiles.length;
 
             await vscode.window.withProgress(
@@ -1232,8 +1231,14 @@ export class PAIJobManager extends Singleton {
 
             return true;
         } catch (e) {
-            Util.err('job.upload.error', [e.message]);
-            return false;
+            const submitAnyway: string = __('job.submission.submit.anyway');
+            const cancelSubmission: string = __('job.submission.submit.cancel');
+            const result: string | undefined = await vscode.window.showErrorMessage(
+                __('storage.upload.error', [uploadConfig.storageName, e.message]),
+                submitAnyway,
+                cancelSubmission
+            );
+            return result === submitAnyway;
         }
     }
 }

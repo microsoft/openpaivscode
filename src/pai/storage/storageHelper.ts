@@ -4,11 +4,12 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { injectable } from 'inversify';
-import { IStorageConfig, OpenPAIClient } from 'openpai-js-sdk';
 import * as path from 'path';
 import { Uri } from 'vscode';
 
+import { __ } from '../../common/i18n';
 import { delay, getSingleton, Singleton } from '../../common/singleton';
 import { StorageTreeNode } from '../container/common/treeNode';
 import { StorageTreeDataProvider } from '../container/storage/storageTreeView';
@@ -29,21 +30,19 @@ export class StorageHelperClass extends Singleton {
     }
 
     public async getStorageMountPoints(cluster: IPAICluster): Promise<{storage: string, mountPoint: string}[]> {
-        const client: OpenPAIClient = new OpenPAIClient({
+        const client: PAIV2.OpenPAIClient = new PAIV2.OpenPAIClient({
             rest_server_uri: cluster.rest_server_uri,
             token: cluster.token,
             username: cluster.username,
             password: cluster.password,
             https: cluster.https
         });
-        const storageConfigs: IStorageConfig[] = await client.storage.getConfig();
+        const storageSummary: PAIV2.IStorageSummary = await client.storage.getStorages();
         const result: { storage: string, mountPoint: string}[] = [];
-        storageConfigs.forEach(config => {
-            config.mountInfos.forEach((mountInfo: { mountPoint: string; }) => {
-                result.push({
-                    storage: config.name,
-                    mountPoint: mountInfo.mountPoint
-                });
+        storageSummary.storages.forEach(storage => {
+            result.push({
+                storage: storage.name,
+                mountPoint: `mnt/${storage.name}`
             });
         });
 
@@ -51,25 +50,27 @@ export class StorageHelperClass extends Singleton {
     }
 
     public async getStorages(cluster: IPAICluster): Promise<string[]> {
-        const client: OpenPAIClient = new OpenPAIClient({
+        const client: PAIV2.OpenPAIClient = new PAIV2.OpenPAIClient({
             rest_server_uri: cluster.rest_server_uri,
             token: cluster.token,
             username: cluster.username,
             password: cluster.password,
             https: cluster.https
         });
-        const storageConfigs: IStorageConfig[] = await client.storage.getConfig();
-        return storageConfigs.map(x => x.name);
+        const storageSummary: PAIV2.IStorageSummary = await client.storage.getStorages();
+        return storageSummary.storages.map(x => x.name);
     }
 
     public async getPersonalStorages(): Promise<string[]> {
         const personalStorageManager: PersonalStorageManager = await getSingleton(PersonalStorageManager);
-        return personalStorageManager.allConfigurations.map(config => config.spn);
+        return personalStorageManager.allConfigurations.map(config => config.name);
     }
 
     public async getFolder(baseFolder: StorageTreeNode, target: string): Promise<StorageTreeNode> {
         for (const name of target.split('/')) {
-            baseFolder = (await baseFolder.getChildren()).find(child => child.label === name)!;
+            if (baseFolder && typeof baseFolder.getChildren === 'function') {
+                baseFolder = (await baseFolder.getChildren()).find(child => child.label === name)!;
+            }
         }
         return baseFolder;
     }
@@ -100,6 +101,7 @@ export class StorageHelperClass extends Singleton {
         const treeView: StorageTreeDataProvider = await getSingleton(StorageTreeDataProvider);
         const dirname: string = path.dirname(target);
         const folderName: string = path.join(jobName, dirname).replace(/\\/g, '/');
+
         const baseNode: StorageTreeNode =
             await this.createFolder(uploadConfig, clusterName, folderName);
         let targetNode: StorageTreeNode = await this.getFolder(baseNode, folderName);
@@ -107,12 +109,12 @@ export class StorageHelperClass extends Singleton {
             await delay(100);
             targetNode = await this.getFolder(baseNode, folderName);
         }
-        try {
-            await targetNode.uploadFile([file]);
-            await treeView.refresh(targetNode);
-        } catch (err) {
-            console.log(err);
-            throw err;
+
+        if (targetNode === undefined) {
+            throw new Error(__('storage.create.folder.error', folderName));
         }
+
+        await targetNode.uploadFile([file]);
+        await treeView.refresh(targetNode);
     }
 }

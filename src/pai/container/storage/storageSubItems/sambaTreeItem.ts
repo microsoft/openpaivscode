@@ -5,16 +5,16 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import * as fs from 'fs-extra';
-import { IStorageServer } from 'openpai-js-sdk';
 import * as path from 'path';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
 import {
-    CONTEXT_STORAGE_SAMBA} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { PathBaseStorageManager } from '../../storage/pathBaseStorageManager';
-import { StorageTreeNode } from '../common/treeNode';
+    CONTEXT_STORAGE_SAMBA} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { PathBaseStorageManager } from '../../../storage/pathBaseStorageManager';
+import { StorageTreeNode } from '../../common/treeNode';
 
 import { PathBaseTreeNode } from './pathBaseTreeItem';
 
@@ -22,19 +22,15 @@ import { PathBaseTreeNode } from './pathBaseTreeItem';
  * PAI Samba storage root node.
  */
 export class SambaRootNode extends StorageTreeNode {
-    public storageServer: IStorageServer;
-    public mountPath: string;
+    public storage: PAIV2.IStorageDetail;
     public rootPath: string;
 
-    constructor(storage: IStorageServer, mountPath: string, parent: StorageTreeNode) {
-        super(storage.spn, parent, TreeItemCollapsibleState.Collapsed);
+    constructor(storage: PAIV2.IStorageDetail, parent: StorageTreeNode) {
+        super(storage.name, parent, TreeItemCollapsibleState.Collapsed);
         this.contextValue = CONTEXT_STORAGE_SAMBA;
-        this.storageServer = storage;
+        this.storage = storage;
         this.description = 'Samba';
-        this.mountPath = mountPath;
-        const rootUrl: string =
-            `//${this.storageServer.data.address}${this.storageServer.data.rootPath}`;
-        this.rootPath = path.join(rootUrl, this.mountPath);
+        this.rootPath = `//${(<any>storage.data).address}`;
     }
 
     public async refresh(): Promise<void> {

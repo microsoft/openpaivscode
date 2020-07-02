@@ -13,7 +13,8 @@ import {
     ContainerListBlobHierarchySegmentResponse,
     StorageSharedKeyCredential
 } from '@azure/storage-blob';
-import { IStorageServer } from 'openpai-js-sdk';
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
+import { IAzureBlobCfg } from '@microsoft/openpai-js-sdk/lib/src/storage/clients/azureBlobClient';
 import * as path from 'path';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
@@ -27,13 +28,13 @@ import {
     ICON_FILE,
     ICON_FOLDER,
     ICON_STORAGE
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { getSingleton } from '../../../common/singleton';
-import { Util } from '../../../common/util';
-import { AzureBlobManager } from '../../storage/azureBlobManager';
-import { RemoteFileEditor } from '../../utility/remoteFileEditor';
-import { StorageLoadMoreTreeNode, StorageTreeNode } from '../common/treeNode';
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { getSingleton } from '../../../../common/singleton';
+import { Util } from '../../../../common/util';
+import { AzureBlobManager } from '../../../storage/azureBlobManager';
+import { RemoteFileEditor } from '../../../utility/remoteFileEditor';
+import { StorageLoadMoreTreeNode, StorageTreeNode } from '../../common/treeNode';
 
 export type BlobIter = PagedAsyncIterableIterator<({
         kind: 'prefix';
@@ -212,15 +213,15 @@ export class AzureBlobTreeItem extends StorageTreeNode {
  * PAI azure blob storage root item.
  */
 export class AzureBlobRootItem extends StorageTreeNode {
-    public storage: IStorageServer;
+    public storage: PAIV2.IStorageDetail;
     public client: ContainerClient;
     public rootPath: string;
 
     private currentContinuationToken?: string;
     private currentPrefixes: Map<string, AzureBlobTreeItem>;
 
-    public constructor(storage: IStorageServer, rootPath: string, parent: StorageTreeNode) {
-        super(storage.spn, parent, TreeItemCollapsibleState.Collapsed);
+    public constructor(storage: PAIV2.IStorageDetail, rootPath: string, parent: StorageTreeNode) {
+        super(storage.name, parent, TreeItemCollapsibleState.Collapsed);
         this.storage = storage;
         this.contextValue = CONTEXT_STORAGE_AZURE_BLOB;
         this.description = 'Azure Blob';
@@ -228,11 +229,22 @@ export class AzureBlobRootItem extends StorageTreeNode {
         this.iconPath = Uri.file(Util.resolvePath(ICON_STORAGE));
         this.currentPrefixes = new Map<string, AzureBlobTreeItem>();
 
-        const credential: StorageSharedKeyCredential =
-            new StorageSharedKeyCredential(storage.data.accountName, storage.data.key);
-        const blobClient: BlobServiceClient = new BlobServiceClient(
-            `https://${storage.data.accountName}.blob.core.windows.net`, credential);
-        this.client = blobClient.getContainerClient(storage.data.containerName);
+        const azureBlobConfig: IAzureBlobCfg = <IAzureBlobCfg>storage.data;
+
+        if (azureBlobConfig.accountKey) { // use the accountKey
+            const credential: StorageSharedKeyCredential =
+                new StorageSharedKeyCredential(azureBlobConfig.accountName!, azureBlobConfig.accountKey!);
+            const blobClient: BlobServiceClient = new BlobServiceClient(
+                `https://${azureBlobConfig.accountName}.blob.core.windows.net`, credential);
+            this.client = blobClient.getContainerClient(azureBlobConfig.containerName);
+        } else { // SAS token
+            let url: string = azureBlobConfig.accountSASToken!;
+            if (!url.startsWith('https://')) {
+                url = `https://${azureBlobConfig.accountName}.blob.core.windows.net${azureBlobConfig.accountSASToken}`;
+            }
+            const blobClient: BlobServiceClient = new BlobServiceClient(url);
+            this.client = blobClient.getContainerClient(azureBlobConfig.containerName);
+        }
     }
 
     public async refresh(): Promise<void> {

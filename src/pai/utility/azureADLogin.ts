@@ -4,25 +4,25 @@
  * @author Microsoft
  */
 
+import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import * as crypto from 'crypto';
 import { EventEmitter } from 'events';
 import * as http from 'http';
 import { AddressInfo } from 'net';
-import { ILoginInfo } from 'openpai-js-sdk';
 import { stringify } from 'querystring';
 import * as url from 'url';
 import * as vscode from 'vscode';
 
 import { __ } from '../../common/i18n';
 
-async function callback(reqUrl: url.Url): Promise<ILoginInfo> {
+async function callback(reqUrl: url.Url): Promise<PAIV2.ILoginInfo> {
     let error: string | string[] | undefined;
 
     if (reqUrl && reqUrl.query && typeof(reqUrl.query) !== 'string') {
         error = reqUrl.query.error_description || reqUrl.query.error;
 
         if (!error) {
-            return <ILoginInfo> <unknown>reqUrl.query;
+            return <PAIV2.ILoginInfo> <unknown>reqUrl.query;
         }
     }
 
@@ -53,7 +53,7 @@ function createServer(nonce: string): { server: http.Server, emitter: EventEmitt
                 break;
             case '/callback':
                 try {
-                    const loginInfo: ILoginInfo = await callback(reqUrl);
+                    const loginInfo: PAIV2.ILoginInfo = await callback(reqUrl);
                     emitter.emit('callback', { loginInfo, res });
                 } catch (err) {
                     emitter.emit('callback', { err, res });

@@ -4,8 +4,8 @@
  * @author Microsoft
  */
 
+import { PAIV1, PAIV2 } from '@microsoft/openpai-js-sdk';
 import { injectable } from 'inversify';
-import * as request from 'request-promise-native';
 import {
     commands, window, workspace, Event, EventEmitter, TreeDataProvider,
     TreeItem, TreeItemCollapsibleState, TreeView, WorkspaceConfiguration
@@ -35,7 +35,6 @@ import { Util } from '../../common/util';
 import { ClusterManager } from '../clusterManager';
 import { RecentJobManager } from '../recentJobManager';
 import { IPAICluster, IPAIJobInfo } from '../utility/paiInterface';
-import { PAIRestUri } from '../utility/paiUri';
 
 import { ClusterNode } from './common/clusterNode';
 import { FilterType, LoadingState, TreeDataType } from './common/treeDataEnum';
@@ -316,10 +315,23 @@ export class JobListTreeDataProvider extends Singleton implements TreeDataProvid
                 cluster.loadingState = LoadingState.Loading;
                 this.onDidChangeTreeDataEmitter.fire(cluster);
                 try {
-                    cluster.jobs = await request.get(
-                        PAIRestUri.jobs(cluster.config),
-                        { json: true }
-                    );
+                    const clusterConfig: PAIV2.IPAICluster = {
+                        rest_server_uri: cluster.config.rest_server_uri,
+                        token: cluster.config.token,
+                        username: cluster.config.username,
+                        password: cluster.config.password,
+                        https: cluster.config.https
+                    };
+                    try {
+                        // Try OpenPAI v2 api to get jobs
+                        const client: PAIV2.OpenPAIClient = new PAIV2.OpenPAIClient(clusterConfig);
+                        cluster.jobs = await client.job.listJobs();
+                    } catch {
+                        // Try OpenPAI v1 api to get jobs
+                        const client: PAIV1.OpenPAIClient = new PAIV1.OpenPAIClient(clusterConfig);
+                        cluster.jobs = await client.job.list();
+                    }
+
                     cluster.loadingState = LoadingState.Finished;
                     this.clusterLoadError[cluster.index] = false;
                 } catch (e) {

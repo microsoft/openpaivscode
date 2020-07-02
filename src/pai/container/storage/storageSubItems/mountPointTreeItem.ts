@@ -8,37 +8,34 @@ import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 
 import {
-    CONTEXT_STORAGE_PERSONAL_ITEM,
-    CONTEXT_STORAGE_PERSONAL_ROOT,
-    ICON_STORAGE
-} from '../../../common/constants';
-import { __ } from '../../../common/i18n';
-import { getSingleton } from '../../../common/singleton';
-import { Util } from '../../../common/util';
-import { PersonalStorageManager } from '../../storage/personalStorageManager';
-import { StorageTreeNode } from '../common/treeNode';
+    CONTEXT_STORAGE_MOUNTPOINT_ITEM
+} from '../../../../common/constants';
+import { __ } from '../../../../common/i18n';
+import { IPAICluster } from '../../../utility/paiInterface';
+import { StorageTreeNode } from '../../common/treeNode';
 
-import { AzureBlobRootItem } from './storageSubItems/azureBlobTreeItem';
-import { NfsRootNode } from './storageSubItems/NfsTreeItem';
-import { SambaRootNode } from './storageSubItems/sambaTreeItem';
+import { AzureBlobRootItem } from './azureBlobTreeItem';
+import { NfsRootNode } from './NfsTreeItem';
+import { SambaRootNode } from './sambaTreeItem';
 
 /**
- * PAI personal storage tree node.
+ * PAI storage mount point tree node.
  */
-export class PersonalStorageTreeNode extends StorageTreeNode {
-    public readonly contextValue: string = CONTEXT_STORAGE_PERSONAL_ITEM;
+export class MountPointTreeNode extends StorageTreeNode {
+    public contextValue: string = CONTEXT_STORAGE_MOUNTPOINT_ITEM;
     public data: StorageTreeNode;
-    public index: number;
+    public cluster: IPAICluster;
 
     constructor(
         storage: PAIV2.IStorageDetail,
-        index: number,
+        cluster: IPAICluster,
         parent?: StorageTreeNode,
         collapsibleState: TreeItemCollapsibleState = TreeItemCollapsibleState.Collapsed
     ) {
-        super(storage.name, parent, collapsibleState);
-        this.iconPath = Util.resolvePath(ICON_STORAGE);
-        this.index = index;
+        super('Mount Point', parent, collapsibleState);
+        this.description = this.getMountPointPath(storage);
+
+        this.cluster = cluster;
         this.data = this.initializeData(storage);
     }
 
@@ -56,10 +53,6 @@ export class PersonalStorageTreeNode extends StorageTreeNode {
 
     public async uploadFile(files?: Uri[]): Promise<void> {
         await this.data.uploadFile(files);
-    }
-
-    public async uploadFolder(): Promise<void> {
-        await this.data.uploadFolder();
     }
 
     public async createFolder(folder?: string): Promise<void> {
@@ -84,22 +77,8 @@ export class PersonalStorageTreeNode extends StorageTreeNode {
             return new StorageTreeNode(err.message);
         }
     }
-}
 
-/**
- * PAI personal storage root node.
- */
-export class PersonalStorageRootNode extends StorageTreeNode {
-    public readonly contextValue: string = CONTEXT_STORAGE_PERSONAL_ROOT;
-
-    constructor() {
-        super(__('treeview.storage.personal-root.label'), undefined, TreeItemCollapsibleState.Expanded);
-    }
-
-    public async refresh(): Promise<void> {
-        const personalStorageManager: PersonalStorageManager = await getSingleton(PersonalStorageManager);
-        const storages: PAIV2.IStorageDetail[] = personalStorageManager.allConfigurations;
-
-        this.children = storages.map((storage, index) => new PersonalStorageTreeNode(storage, index, this));
+    private getMountPointPath(storageDetail: PAIV2.IStorageDetail): string {
+        return `/mnt/${storageDetail.name}`;
     }
 }

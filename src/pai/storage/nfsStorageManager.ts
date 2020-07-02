@@ -4,11 +4,10 @@
  * @author Microsoft
  */
 
+import { INfsCfg } from '@microsoft/openpai-js-sdk/lib/src/api/v2/models/storage';
 import * as child from 'child_process';
 import { Dictionary } from 'lodash';
-import { IStorageServer } from 'openpai-js-sdk';
 import * as os from 'os';
-import * as path from 'path';
 import {
     commands, window, workspace, Terminal, WorkspaceConfiguration
 } from 'vscode';
@@ -20,8 +19,8 @@ import { __ } from '../../common/i18n';
 import { getSingleton, Singleton } from '../../common/singleton';
 import { Util } from '../../common/util';
 import { StorageTreeNode } from '../container/common/treeNode';
-import { MountPointTreeNode } from '../container/storage/mountPointTreeItem';
-import { NfsRootNode } from '../container/storage/NfsTreeItem';
+import { MountPointTreeNode } from '../container/storage/storageSubItems/mountPointTreeItem';
+import { NfsRootNode } from '../container/storage/storageSubItems/NfsTreeItem';
 import { StorageTreeDataProvider } from '../container/storage/storageTreeView';
 
 /**
@@ -80,8 +79,8 @@ export class NfsStorageManager extends Singleton {
     }
 
     public async mountNfs(node: NfsRootNode, mountPath: string): Promise<void> {
-        const server: IStorageServer = node.storageServer;
-        let serverPath: string = path.join(server.data.rootPath, node.mountInfo.path).replace(/\\/g, '/');
+        const nfsConfig: INfsCfg = <INfsCfg> node.storage.data;
+        let serverPath: string = nfsConfig.path.replace(/\\/g, '/');
         if (serverPath.includes('\${PAI_USER_NAME}')) {
             serverPath = serverPath.replace('\${PAI_USER_NAME}', (<MountPointTreeNode>node.parent).cluster.username!);
         }
@@ -89,11 +88,11 @@ export class NfsStorageManager extends Singleton {
         let cmdStr: string = '';
         switch (os.platform()) {
             case 'win32':
-                cmdStr = `cmd /c mount -o anon ${server.data.address}:${serverPath} ${mountPath}`;
+                cmdStr = `cmd /c mount -o anon ${nfsConfig.server}:${serverPath} ${mountPath}`;
                 break;
             case 'darwin':
                 cmdStr = `sudo mkdir -p ${mountPath} && ` +
-                    `sudo mount -t nfs -o resvport,hard,nolock ${server.data.address}:${serverPath} ${mountPath}`;
+                    `sudo mount -t nfs -o resvport,hard,nolock ${nfsConfig.server}:${serverPath} ${mountPath}`;
                 break;
             default:
                 Util.err('container.nfs.mount.unsupport.os');

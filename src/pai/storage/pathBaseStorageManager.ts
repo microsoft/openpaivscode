@@ -15,10 +15,10 @@ import {
 } from '../../common/constants';
 import { __ } from '../../common/i18n';
 import { Util } from '../../common/util';
-import { MountPointTreeNode } from '../container/storage/mountPointTreeItem';
-import { NfsRootNode } from '../container/storage/NfsTreeItem';
-import { PathBaseTreeNode } from '../container/storage/pathBaseTreeItem';
-import { SambaRootNode } from '../container/storage/SambaTreeItem';
+import { MountPointTreeNode } from '../container/storage/storageSubItems/mountPointTreeItem';
+import { NfsRootNode } from '../container/storage/storageSubItems/NfsTreeItem';
+import { PathBaseTreeNode } from '../container/storage/storageSubItems/pathBaseTreeItem';
+import { SambaRootNode } from '../container/storage/storageSubItems/sambaTreeItem';
 
 /**
  * Path base storage management module, used in Samba and NFS.
@@ -120,16 +120,18 @@ export class PathBaseStorageManager {
             `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [0, files.length])}`;
         statusBarItem.show();
         try {
+            let fileNames: string = '';
             for (const [i, file] of files.entries()) {
                 const name: string = path.basename(file.fsPath);
                 const targetPath: string = path.join((<any>target).rootPath, name);
+                fileNames += name;
                 statusBarItem.text =
                     `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [i, files.length])}`;
                 await fs.copy(file.fsPath, targetPath);
             }
-            Util.info('storage.upload.success');
+            Util.info('storage.upload.success', fileNames);
         } catch (err) {
-            Util.err('storage.upload.error', [err]);
+            Util.err('storage.upload.error', ['', err]);
         }
         statusBarItem.dispose();
     }
@@ -156,16 +158,18 @@ export class PathBaseStorageManager {
             `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [0, folders.length])}`;
         statusBarItem.show();
         try {
+            let fileNames: string = '';
             for (const [i, folder] of folders.entries()) {
                 const name: string = path.basename(folder.fsPath);
                 const targetPath: string = path.join((<any>target).rootPath, name);
+                fileNames += name;
                 statusBarItem.text =
                     `${OCTICON_CLOUDUPLOAD} ${__('storage.upload.status', [i, folders.length])}`;
                 await fs.copy(folder.fsPath, targetPath);
             }
-            Util.info('storage.upload.success');
+            Util.info('storage.upload.success', fileNames);
         } catch (err) {
-            Util.err('storage.upload.error', [err]);
+            Util.err('storage.upload.error', ['', err]);
         }
         statusBarItem.dispose();
     }
