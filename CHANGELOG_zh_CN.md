@@ -55,3 +55,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - Fix absolute links in document
+
+## [0.3.2] - 2020-07
+
+### Added
+
+- Update OpenPAI JS SDK version
