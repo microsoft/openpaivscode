@@ -25,21 +25,8 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-    # Runs a single command using the runners shell
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v1.4.2
-      with:
-        # Version Spec of the version to use.  Examples: 10.x, 10.15.1, >=10.15.0
-        node-version: 12
-        # Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN
-        registry-url: https://registry.npmjs.org/
-
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: install # will run `yarn install` command
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: package # will run `yarn package` command
+    - run: yarn install
+    - run: yarn package
 
     - name: Create Release
       id: create_release
@@ -58,15 +45,11 @@ jobs:
         # The URL for uploading assets to the release
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         # The path to the asset you want to upload
-        asset_path: /github/workspace/pai-vscode-${{ steps.get_version.outputs.VERSION }}.vsix
+        asset_path: ./pai-vscode-${{ steps.get_version.outputs.VERSION }}.vsix
         # The name of the asset you want to upload
         asset_name: pai-vscode-${{ steps.get_version.outputs.VERSION }}.vsix
         # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
         asset_content_type: application/zip
 
     - name: Publish to vscode marketplace
-      uses: lannonbr/vsce-action@2.0.0
-      with:
-          args: "publish -p $VSCE_TOKEN"
-      env:
-          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+      run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
