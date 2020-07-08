@@ -58,3 +58,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New job list auto refresh rule
   - Job list auto refresh will be trigger only when the `PAI JOB LIST` view is visible.
 - Add notification to website after AAD login success
+
+## [0.3.1] - 2020-03
+
+### Added
+
+- Fix document
+
+## [0.3.2] - 2020-07
+
+### Added
+
+- Update OpenPAI JS SDK version
