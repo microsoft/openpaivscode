@@ -21,6 +21,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
     # Runs a single command using the runners shell
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
@@ -47,19 +51,19 @@ jobs:
         release_name: ${{ github.ref }}
         draft: false
         prerelease: true
-    
+
     - name: Upload a Release Asset
       uses: actions/upload-release-asset@v1.0.2
       with:
         # The URL for uploading assets to the release
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         # The path to the asset you want to upload
-        asset_path: ./pai-vscode-${{ github.ref }}.vsix
+        asset_path: /github/workspace/pai-vscode-${{ steps.get_version.outputs.VERSION }}.vsix
         # The name of the asset you want to upload
-        asset_name: pai-vscode-${{ github.ref }}.vsix
+        asset_name: pai-vscode-${{ steps.get_version.outputs.VERSION }}.vsix
         # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
         asset_content_type: application/zip
-    
+
     - name: Publish to vscode marketplace
       uses: lannonbr/vsce-action@2.0.0
       with:
