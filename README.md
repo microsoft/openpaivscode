@@ -1,6 +1,6 @@
 # OpenPAI VS Code Client
 
-[![Version](https://img.shields.io/github/release/Microsoft/openpaivscode.svg)](https://github.com/Microsoft/openpaivscode/releases/latest)
+[![Version](https://img.shields.io/github/release/Microsoft/openpaivscode.svg?include_prereleases)](https://github.com/Microsoft/openpaivscode/releases/latest)
 [![Coverage Status](https://coveralls.io/repos/github/microsoft/openpaivscode/badge.svg?branch=master)](https://coveralls.io/github/microsoft/openpaivscode?branch=master)
 
 [简体中文](https://github.com/microsoft/openpaivscode/blob/master/README_zh_CN.md)
