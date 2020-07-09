@@ -29,5 +29,3 @@ declare module 'node-yaml-parser' {
 
     export const util: Util;
 }
-declare module 'nyc';
-declare module 'istanbul-lib-coverage';
