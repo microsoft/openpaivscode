@@ -61,16 +61,12 @@ export function bindExtensionContext(context: vscode.ExtensionContext): void {
 }
 
 export async function initializeAll(singletonClasses: Constructor<Singleton>[]): Promise<void> {
-    getSingletonDisabled = true;
-    const allSingletons: Singleton[] = singletonClasses.map(clazz => container.get(clazz));
-    getSingletonDisabled = false;
-    await Promise.all(allSingletons.map(singleton => singleton.ensureActivated()));
-    initializationFinish = true;
-}
-
-export async function waitForAllSingletonFinish(): Promise<void> {
-    while (!initializationFinish) {
-        await delay(10);
+    if (!initializationFinish) {
+        getSingletonDisabled = true;
+        const allSingletons: Singleton[] = singletonClasses.map(clazz => container.get(clazz));
+        getSingletonDisabled = false;
+        await Promise.all(allSingletons.map(singleton => singleton.ensureActivated()));
+        initializationFinish = true;
     }
 }
 

@@ -8,9 +8,10 @@ import * as assert from 'assert';
 import { ISuiteCallbackContext } from 'mocha';
 import { back as nockBack } from 'nock';
 import { join } from 'path';
-import { FileType, Uri } from 'vscode';
+import { extensions, FileType, Uri } from 'vscode';
 
-import { getSingleton, waitForAllSingletonFinish } from '../common/singleton';
+import { getSingleton } from '../common/singleton';
+import { activate } from '../extension';
 import { ClusterManager } from '../pai/clusterManager';
 import { HDFSFileSystemProvider } from '../pai/storage/hdfs';
 
@@ -19,22 +20,27 @@ nockBack.fixtures = join(__dirname, '../../src/test', 'fixtures');
 nockBack.setMode('record');
 
 function mockUri(path: string): Uri {
-    return Uri.parse('webhdfs://openmindstudio@10.151.40.179' + path);
+    return Uri.parse('webhdfs://openpai@openpai.vscode.test' + path);
 }
 
 suite('HDFS Client', function (this: ISuiteCallbackContext): void {
     this.timeout(0);
 
     suiteSetup(async () => {
-        await waitForAllSingletonFinish();
+        const ext: any = extensions.getExtension('openpaivscodeclient.pai-vscode');
+        if (!ext.isActive) {
+            await ext.activate();
+        }
+        await activate(ext.extensionContext);
+
         (await getSingleton(ClusterManager)).allConfigurations.push(<any>{
             name: 'Sample Cluster',
             username: 'openmindstudio',
-            rest_server_uri: '10.151.40.179/rest-server',
-            webhdfs_uri: '10.151.40.179/webhdfs/api/v1',
-            grafana_uri: '10.151.40.179/grafana',
-            k8s_dashboard_uri: '10.151.40.179/kubernetes-dashboard',
-            web_portal_uri: '10.151.40.179/'
+            rest_server_uri: 'openpai.vscode.test/rest-server',
+            webhdfs_uri: 'openpai.vscode.test/webhdfs/api/v1',
+            grafana_uri: 'openpai.vscode.test/grafana',
+            k8s_dashboard_uri: 'openpai.vscode.test/kubernetes-dashboard',
+            web_portal_uri: 'openpai.vscode.test/'
         });
     });
 
@@ -63,7 +69,7 @@ suite('HDFS Client', function (this: ISuiteCallbackContext): void {
         nockDone();
     });
 
-    test('Folder CRUD', async () => {
+    /*test('Folder CRUD', async () => {
         const hdfsProvider: HDFSFileSystemProvider = new HDFSFileSystemProvider();
         const { nockDone } = await nockBack('hdfs.foldercrud.json');
         await hdfsProvider.createDirectory(mockUri('/testfolder'));
@@ -107,5 +113,5 @@ suite('HDFS Client', function (this: ISuiteCallbackContext): void {
 
     suiteTeardown(async () => {
         (await getSingleton(ClusterManager)).allConfigurations.pop();
-    });
+    });*/
 });
