@@ -28,12 +28,6 @@ jobs:
     - run: yarn install
     - run: yarn test
 
-    - name: npm install, build, test
-      run: |
-        npm install
-        npm run code-coverage
-        mkdir coverage
-        npm run coveralls
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.1
       with:
