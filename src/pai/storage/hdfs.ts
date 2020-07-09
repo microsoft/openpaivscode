@@ -34,6 +34,8 @@ import { IPAICluster } from '../utility/paiInterface';
 
 import { createWebHDFSClient, IHDFSClient, IHDFSStatResult } from './webhdfs-workaround';
 
+type Constructor<T> = new(...arg: any[]) => T;
+
 const stat: (path: string) => Promise<fs.Stats> = promisify(fs.stat);
 const readdir: (path: string) => Promise<string[]> = promisify(fs.readdir);
 const mkdir: (path: string) => Promise<void> = fs.mkdirp;
@@ -52,6 +54,11 @@ export class HDFSFileSystemProvider implements vscode.FileSystemProvider {
     public onDidChangeFile: vscode.Event<vscode.FileChangeEvent[]> = this.onDidChangeFileEmitter.event; // tslint:disable-line
 
     private clientMap: Map<string, IHDFSClient> = new Map();
+    private getSingleton: <T extends Singleton>(clazz: Constructor<T>) => T | Promise<T>;
+
+    constructor(getSingletonFunc?: <T extends Singleton>(clazz: Constructor<T>) => T | Promise<T>) {
+        this.getSingleton = getSingletonFunc || getSingleton;
+    }
 
     // `${username}@${host}:${port}` (e.g. user@127.0.0.1:50070) as authority
     public async addClient(authority: string): Promise<IHDFSClient | undefined> {
@@ -60,7 +67,7 @@ export class HDFSFileSystemProvider implements vscode.FileSystemProvider {
         }
         const [user, uri] = authority.split('@');
         const [host, port = '80'] = uri.split(':');
-        const allConfigurations: IPAICluster[] = (await getSingleton(ClusterManager)).allConfigurations;
+        const allConfigurations: IPAICluster[] = (await this.getSingleton(ClusterManager)).allConfigurations;
         const currentCluster: IPAICluster | undefined = allConfigurations.find(cluster =>
             !!(cluster.username === user && cluster.webhdfs_uri && cluster.webhdfs_uri.startsWith(uri + '/'))
         );

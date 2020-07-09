@@ -8,6 +8,7 @@ import { PAIV2 } from '@microsoft/openpai-js-sdk';
 import { injectable } from 'inversify';
 import { clone, range } from 'lodash';
 import * as request from 'request-promise-native';
+import semverCompare = require('semver-compare'); // tslint:disable-line
 import * as vscode from 'vscode';
 
 import {
@@ -17,10 +18,8 @@ import { getSingleton, Singleton } from '../common/singleton';
 import { Util } from '../common/util';
 
 import { ClusterExplorerChildNode, ConfigurationTreeDataProvider, ITreeData } from './container/configurationTreeDataProvider';
-import { IPAICluster } from './utility/paiInterface';
-
-import semverCompare = require('semver-compare'); // tslint:disable-line
 import { login } from './utility/azureADLogin';
+import { IPAICluster } from './utility/paiInterface';
 
 export interface IConfiguration {
     readonly version: string;
@@ -66,13 +65,13 @@ export class ClusterManager extends Singleton {
         protocol_version: '2'
     };
 
+    public configuration: IConfiguration | undefined;
+
     private onDidChangeEmitter: vscode.EventEmitter<IClusterModification> = new vscode.EventEmitter<IClusterModification>();
     public onDidChange: vscode.Event<IClusterModification> = this.onDidChangeEmitter.event; // tslint:disable-line
 
     private readonly EDIT: string = __('common.edit');
     private readonly DISCARD: string = __('cluster.activate.fix.discard');
-
-    private configuration: IConfiguration | undefined;
 
     public get allConfigurations(): IPAICluster[] {
         return this.configuration!.pais;

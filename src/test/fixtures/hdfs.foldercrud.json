@@ -1,8 +1,8 @@
 [
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 404,
         "response": {
@@ -36,13 +36,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326332434&s=Q9Fc+bmH/RWv37z+C9BjbUxYrIg=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326332434&s=Q9Fc+bmH/RWv37z+C9BjbUxYrIg=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -86,13 +86,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326332980&s=Ddp574MNEvCQLI3uVrhtOvEQY40=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326332980&s=Ddp574MNEvCQLI3uVrhtOvEQY40=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "PUT",
-        "path": "/webhdfs/api/v1/testfolder?op=mkdirs&user.name=openmindstudio&permission=0755",
+        "path": "/webhdfs/api/v1/testfolder?op=mkdirs&user.name=openpai&permission=0755",
         "body": "",
         "status": 200,
         "response": {
@@ -122,13 +122,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326333524&s=qP0MSTMAYYHAZ08nYzgOzEsvCOc=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326333524&s=qP0MSTMAYYHAZ08nYzgOzEsvCOc=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -142,7 +142,7 @@
                         "group": "supergroup",
                         "length": 0,
                         "modificationTime": 1540290333525,
-                        "owner": "openmindstudio",
+                        "owner": "openpai",
                         "pathSuffix": "testfolder",
                         "permission": "755",
                         "replication": 0,
@@ -176,13 +176,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326336952&s=1dZdmusWrgzIxi7I2sEXklgQRBQ=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326336952&s=1dZdmusWrgzIxi7I2sEXklgQRBQ=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 404,
         "response": {
@@ -216,13 +216,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326337499&s=xDswav++C2c643LPgkMeEb4QX64=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326337499&s=xDswav++C2c643LPgkMeEb4QX64=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "PUT",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=create&user.name=openmindstudio&overwrite=true&permission=0755",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=create&user.name=openpai&overwrite=true&permission=0755",
         "body": "",
         "status": 307,
         "response": "<html>\r\n<head><title>307 Temporary Redirect</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>307 Temporary Redirect</h1></center>\r\n<hr><center>nginx/1.13.8</center>\r\n</body>\r\n</html>\r\n",
@@ -238,7 +238,7 @@
             "Connection",
             "close",
             "Location",
-            "http://10.151.40.179/a/10.151.40.197:5075/webhdfs/v1/testfolder/testfile?op=CREATE&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&createflag=&createparent=true&overwrite=true&permission=755"
+            "http://openpai.vscode.test/a/10.151.40.197:5075/webhdfs/v1/testfolder/testfile?op=CREATE&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&createflag=&createparent=true&overwrite=true&permission=755"
         ]
     },
     {
@@ -276,9 +276,9 @@
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "PUT",
-        "path": "/a/10.151.40.197:5075/webhdfs/v1/testfolder/testfile?op=CREATE&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&createflag=&createparent=true&overwrite=true&permission=755",
+        "path": "/a/10.151.40.197:5075/webhdfs/v1/testfolder/testfile?op=CREATE&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&createflag=&createparent=true&overwrite=true&permission=755",
         "body": "fa",
         "status": 201,
         "response": "",
@@ -292,7 +292,7 @@
             "Connection",
             "close",
             "Location",
-            "hdfs://10.151.40.179:9000/testfolder/testfile",
+            "hdfs://openpai.vscode.test:9000/testfolder/testfile",
             "Access-Control-Allow-Origin",
             "*"
         ]
@@ -360,9 +360,9 @@
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder?op=liststatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder?op=liststatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -376,7 +376,7 @@
                         "group": "supergroup",
                         "length": 2,
                         "modificationTime": 1540290338954,
-                        "owner": "openmindstudio",
+                        "owner": "openpai",
                         "pathSuffix": "testfile",
                         "permission": "755",
                         "replication": 2,
@@ -410,13 +410,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326339524&s=vdMK+btmPV3SHQZ/JJY3IpgrDfo=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326339524&s=vdMK+btmPV3SHQZ/JJY3IpgrDfo=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -428,7 +428,7 @@
                 "group": "supergroup",
                 "length": 2,
                 "modificationTime": 1540290338954,
-                "owner": "openmindstudio",
+                "owner": "openpai",
                 "pathSuffix": "",
                 "permission": "755",
                 "replication": 2,
@@ -460,13 +460,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326340075&s=naX/5t/++PtpdkRKpgaeuuSxx1g=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326340075&s=naX/5t/++PtpdkRKpgaeuuSxx1g=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=open&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=open&user.name=openpai",
         "body": "",
         "status": 307,
         "response": "<html>\r\n<head><title>307 Temporary Redirect</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>307 Temporary Redirect</h1></center>\r\n<hr><center>nginx/1.13.8</center>\r\n</body>\r\n</html>\r\n",
@@ -482,13 +482,13 @@
             "Connection",
             "close",
             "Location",
-            "http://10.151.40.179/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0"
+            "http://openpai.vscode.test/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0",
+        "path": "/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0",
         "body": "",
         "status": 200,
         "response": "fa",
@@ -541,9 +541,9 @@
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -555,7 +555,7 @@
                 "group": "supergroup",
                 "length": 2,
                 "modificationTime": 1540290338954,
-                "owner": "openmindstudio",
+                "owner": "openpai",
                 "pathSuffix": "",
                 "permission": "755",
                 "replication": 2,
@@ -587,13 +587,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326341716&s=2F6mlqNQ4PzTG9uOHqNsRm8ffZc=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326341716&s=2F6mlqNQ4PzTG9uOHqNsRm8ffZc=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfile?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfile?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 404,
         "response": {
@@ -627,13 +627,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326342261&s=rlPchznXTNlYGCetg1O4JTyKMYo=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326342261&s=rlPchznXTNlYGCetg1O4JTyKMYo=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "PUT",
-        "path": "/webhdfs/api/v1/testfile?op=create&user.name=openmindstudio&overwrite=true&permission=0755",
+        "path": "/webhdfs/api/v1/testfile?op=create&user.name=openpai&overwrite=true&permission=0755",
         "body": "",
         "status": 307,
         "response": "<html>\r\n<head><title>307 Temporary Redirect</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>307 Temporary Redirect</h1></center>\r\n<hr><center>nginx/1.13.8</center>\r\n</body>\r\n</html>\r\n",
@@ -649,13 +649,13 @@
             "Connection",
             "close",
             "Location",
-            "http://10.151.40.179/a/10.151.40.155:5075/webhdfs/v1/testfile?op=CREATE&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&createflag=&createparent=true&overwrite=true&permission=755"
+            "http://openpai.vscode.test/a/10.151.40.155:5075/webhdfs/v1/testfile?op=CREATE&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&createflag=&createparent=true&overwrite=true&permission=755"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfolder/testfile?op=open&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfolder/testfile?op=open&user.name=openpai",
         "body": "",
         "status": 307,
         "response": "<html>\r\n<head><title>307 Temporary Redirect</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>307 Temporary Redirect</h1></center>\r\n<hr><center>nginx/1.13.8</center>\r\n</body>\r\n</html>\r\n",
@@ -671,13 +671,13 @@
             "Connection",
             "close",
             "Location",
-            "http://10.151.40.179/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0"
+            "http://openpai.vscode.test/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0",
+        "path": "/a/10.151.40.163:5075/webhdfs/v1/testfolder/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0",
         "body": "",
         "status": 200,
         "response": "fa",
@@ -699,9 +699,9 @@
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "PUT",
-        "path": "/a/10.151.40.155:5075/webhdfs/v1/testfile?op=CREATE&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&createflag=&createparent=true&overwrite=true&permission=755",
+        "path": "/a/10.151.40.155:5075/webhdfs/v1/testfile?op=CREATE&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&createflag=&createparent=true&overwrite=true&permission=755",
         "body": "fa",
         "status": 201,
         "response": "",
@@ -715,15 +715,15 @@
             "Connection",
             "close",
             "Location",
-            "hdfs://10.151.40.179:9000/testfile",
+            "hdfs://openpai.vscode.test:9000/testfile",
             "Access-Control-Allow-Origin",
             "*"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfile?op=getfilestatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfile?op=getfilestatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -735,7 +735,7 @@
                 "group": "supergroup",
                 "length": 2,
                 "modificationTime": 1540290344278,
-                "owner": "openmindstudio",
+                "owner": "openpai",
                 "pathSuffix": "",
                 "permission": "755",
                 "replication": 2,
@@ -767,13 +767,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326344848&s=r127SsQb4khRDPJPtj3QG9DKRmA=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326344848&s=r127SsQb4khRDPJPtj3QG9DKRmA=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/testfile?op=open&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/testfile?op=open&user.name=openpai",
         "body": "",
         "status": 307,
         "response": "<html>\r\n<head><title>307 Temporary Redirect</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>307 Temporary Redirect</h1></center>\r\n<hr><center>nginx/1.13.8</center>\r\n</body>\r\n</html>\r\n",
@@ -789,13 +789,13 @@
             "Connection",
             "close",
             "Location",
-            "http://10.151.40.179/a/10.151.40.155:5075/webhdfs/v1/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0"
+            "http://openpai.vscode.test/a/10.151.40.155:5075/webhdfs/v1/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/a/10.151.40.155:5075/webhdfs/v1/testfile?op=OPEN&user.name=openmindstudio&namenoderpcaddress=10.151.40.179:9000&offset=0",
+        "path": "/a/10.151.40.155:5075/webhdfs/v1/testfile?op=OPEN&user.name=openpai&namenoderpcaddress=openpai.vscode.test:9000&offset=0",
         "body": "",
         "status": 200,
         "response": "fa",
@@ -817,9 +817,9 @@
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "DELETE",
-        "path": "/webhdfs/api/v1/testfolder?op=delete&user.name=openmindstudio&recursive=true",
+        "path": "/webhdfs/api/v1/testfolder?op=delete&user.name=openpai&recursive=true",
         "body": "",
         "status": 200,
         "response": {
@@ -849,13 +849,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326346490&s=8XnwemCLLd/P6I9EwzN//aSrQWE=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326346490&s=8XnwemCLLd/P6I9EwzN//aSrQWE=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -869,7 +869,7 @@
                         "group": "supergroup",
                         "length": 2,
                         "modificationTime": 1540290344278,
-                        "owner": "openmindstudio",
+                        "owner": "openpai",
                         "pathSuffix": "testfile",
                         "permission": "755",
                         "replication": 2,
@@ -903,13 +903,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326347054&s=alV2N5Y+EMV0EpKPX6N2WKWOSgQ=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326347054&s=alV2N5Y+EMV0EpKPX6N2WKWOSgQ=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "DELETE",
-        "path": "/webhdfs/api/v1/testfile?op=delete&user.name=openmindstudio&recursive=false",
+        "path": "/webhdfs/api/v1/testfile?op=delete&user.name=openpai&recursive=false",
         "body": "",
         "status": 200,
         "response": {
@@ -939,13 +939,13 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326347601&s=0mElqQZsRHKt0BxNFklCEISWXS4=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326347601&s=0mElqQZsRHKt0BxNFklCEISWXS4=\"; Path=/; HttpOnly"
         ]
     },
     {
-        "scope": "http://10.151.40.179:80",
+        "scope": "http://openpai.vscode.test",
         "method": "GET",
-        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openmindstudio",
+        "path": "/webhdfs/api/v1/?op=liststatus&user.name=openpai",
         "body": "",
         "status": 200,
         "response": {
@@ -978,7 +978,7 @@
             "X-FRAME-OPTIONS",
             "SAMEORIGIN",
             "Set-Cookie",
-            "hadoop.auth=\"u=openmindstudio&p=openmindstudio&t=simple&e=1540326348176&s=+hTXVxWY8OQdvca34KUognl77go=\"; Path=/; HttpOnly"
+            "hadoop.auth=\"u=openpai&p=openpai&t=simple&e=1540326348176&s=+hTXVxWY8OQdvca34KUognl77go=\"; Path=/; HttpOnly"
         ]
     }
 ]
