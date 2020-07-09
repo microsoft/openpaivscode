@@ -5,7 +5,7 @@
  */
 
 import 'reflect-metadata'; // tslint:disable-line
-import { injectable, Container } from 'inversify'; // tslint:disable-line
+import { Container, injectable } from 'inversify'; // tslint:disable-line
 import * as vscode from 'vscode';
 
 import { __ } from './i18n';
@@ -57,6 +57,10 @@ export function getSingleton<T extends Singleton>(clazz: Constructor<T>): Promis
 }
 
 export function bindExtensionContext(context: vscode.ExtensionContext): void {
+    if (container.isBound(EXTENSION_CONTEXT)) {
+        container.unbind(EXTENSION_CONTEXT);
+    }
+
     container.bind(EXTENSION_CONTEXT).toConstantValue(context);
 }
 

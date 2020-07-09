@@ -675,7 +675,7 @@
         "node-rsa": "^1.0.7",
         "node-yaml-parser": "^0.0.9",
         "opn": "^5.4.0",
-        "reflect-metadata": "^0.1.12",
+        "reflect-metadata": "^0.1.13",
         "request": "^2.88.0",
         "request-promise-native": "^1.0.8",
         "semver-compare": "^1.0.0",
@@ -690,6 +690,11 @@
         "exclude": [
             ".vscode-test",
             "src/test"
+        ],
+        "reporter": [
+            "lcov",
+            "text",
+            "text-summary"
         ],
         "all": true
     }
