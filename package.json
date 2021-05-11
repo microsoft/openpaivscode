@@ -671,7 +671,7 @@
         "json-inline-doc": "^2.0.1",
         "json-schema-ref-parser": "^7.1.3",
         "jsonc-parser": "^2.1.1",
-        "lodash": "^4.17.19",
+        "lodash": "^4.17.21",
         "node-rsa": "^1.0.7",
         "node-yaml-parser": "^0.0.9",
         "opn": "^5.4.0",
